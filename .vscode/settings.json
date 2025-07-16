@@ -1,0 +1,12 @@
+{
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "always", // Run ESLint auto-fix when saving
+      "source.fixAll.eslint": "always" // Specifically run eslint fixes
+    },
+    "editor.formatOnSave": true, // Also run Prettier formatting
+    "eslint.validate": [
+      "javascript",
+      "typescript",
+    ],
+    "prettier.requireConfig": true // Only format if Prettier config is present
+  }
