@@ -1,15 +1,25 @@
 # boiler
 
-// install dependencies
+## Instalacja zależności
+
+```bash
 npm install
+```
 
-// develop it
+## Środowisko developerskie
+
+```bash
 npm run start
+```
 
-// relesase test
-num run build-run
+## Build testowy (uruchomia po buildzie)
 
-// release it
+```bash
+npm run build-run
+```
+
+## Wersja produkcyjna
+
+```bash
 npm run build
-
-
+```
