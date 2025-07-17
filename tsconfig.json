@@ -1,12 +1,12 @@
 {
-  "compilerOptions": {
-    "target": "ES2022",
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "esModuleInterop": true,
-    "strict": true,
-    "outDir": "dist",
-    "baseUrl": ".",
-  },
-  "include": ["backend", "frontend"]
+    "compilerOptions": {
+        "target": "ES2022",
+        "module": "ESNext",
+        "moduleResolution": "Node",
+        "esModuleInterop": true,
+        "strict": true,
+        "outDir": "dist",
+        "baseUrl": "."
+    },
+    "include": ["backend", "frontend"]
 }

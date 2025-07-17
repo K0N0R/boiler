@@ -1,4 +1,1 @@
-html, body {
-    margin: 0;
-    background-color: azure;
-}
+@import url("./styles/reset.css");

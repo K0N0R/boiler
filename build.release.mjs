@@ -1,32 +1,57 @@
 import esbuild from 'esbuild';
 import fs from 'node:fs/promises';
-import { generatePreloadConfig } from './generate-preload-config.mjs'
+import { generatePreloadConfig } from './generate-preload-config.mjs';
 import { copyFrontendFiles } from './build.snippets.mjs';
 
-await generatePreloadConfig()
-// Cleanup old build
-await fs.rm('dist/release', { recursive: true, force: true });
-await fs.mkdir('dist/release/public/assets', { recursive: true });
+const OUT_DIR = 'dist/release';
 
-// Build frontend
-esbuild.buildSync({
-    entryPoints: ['frontend/index.ts'],
-    bundle: true,
-    minify: true,
-    sourcemap: false,
-    outfile: 'dist/release/public/index.js',
-    format: 'esm',
-});
+async function cleanRelease() {
+    console.log('🧹 Cleaning release folder...');
+    await fs.rm(OUT_DIR, { recursive: true, force: true });
+    await fs.mkdir(`${OUT_DIR}/public/assets`, { recursive: true });
+}
 
-// Build backend
-esbuild.buildSync({
-    entryPoints: ['backend/index.ts'],
-    bundle: true,
-    platform: 'node',
-    outfile: 'dist/release/server.js',
-    sourcemap: false,
-});
+async function buildCss() {
+    console.log('🎨 Building CSS...');
+    await esbuild.build({
+        entryPoints: ['frontend/main.css'],
+        bundle: true,
+        minify: true,
+        outfile: `${OUT_DIR}/public/index.css`,
+        loader: { '.css': 'css' },
+    });
+}
 
-await copyFrontendFiles('release');
+async function buildFrontend() {
+    console.log('🧱 Building frontend...');
+    await esbuild.build({
+        entryPoints: ['frontend/index.ts'],
+        bundle: true,
+        minify: true,
+        outfile: `${OUT_DIR}/public/index.js`,
+        format: 'esm',
+    });
+}
 
-console.log('✅ Release build complete');
+async function buildBackend() {
+    console.log('🖥️ Building backend...');
+    await esbuild.build({
+        entryPoints: ['backend/index.ts'],
+        bundle: true,
+        minify: true,
+        outfile: `${OUT_DIR}/server.js`,
+        platform: 'node',
+    });
+}
+
+async function main() {
+    await generatePreloadConfig();
+    await cleanRelease();
+    await copyFrontendFiles(OUT_DIR);
+
+    await Promise.all([buildCss(), buildFrontend(), buildBackend()]);
+
+    console.log('✅ Release build complete');
+}
+
+main();

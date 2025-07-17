@@ -1,33 +1,34 @@
 {
-  "name": "boiler",
-  "version": "1.0.0",
-  "scripts": {
-    "start": "cross-env ENV=development node build.development.mjs",
-    "build": "cross-env ENV=release node build.release.mjs",
-    "build-run": "npm run build && cd dist/release && node server.js",
-    "lint": "eslint . --ext .ts,.mjs",
-    "lint-fix": "eslint . --ext .ts,.mjs --fix"
-  },
-  "dependencies": {
-    "express": "^4.18.2",
-    "ws": "^8.13.0"
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.31.0",
-    "@types/express": "^5.0.3",
-    "@types/node": "^24.0.13",
-    "@types/ws": "^8.18.1",
-    "@typescript-eslint/eslint-plugin": "^8.36.0",
-    "@typescript-eslint/parser": "^8.36.0",
-    "chokidar": "^3.5.3",
-    "cross-env": "^7.0.3",
-    "esbuild": "^0.20.0",
-    "eslint": "^9.31.0",
-    "eslint-config-prettier": "^10.1.5",
-    "eslint-plugin-prettier": "^5.5.1",
-    "globals": "^16.3.0",
-    "prettier": "^3.6.2",
-    "typescript": "^5.3.3",
-    "typescript-eslint": "^8.36.0"
-  }
+    "name": "boiler",
+    "version": "1.0.0",
+    "scripts": {
+        "start": "cross-env ENV=development node build.development.mjs",
+        "build": "cross-env ENV=release node build.release.mjs",
+        "build-run": "npm run build && cd dist/release && node server.js",
+        "lint": "eslint . --ext .ts,.mjs,.tsx,.json",
+        "lint-fix": "eslint . --ext .ts,.mjs --fix,.tsx --fix,.json --fix"
+    },
+    "dependencies": {
+        "express": "^4.18.2",
+        "ws": "^8.13.0"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.31.0",
+        "@eslint/json": "^0.13.0",
+        "@types/express": "^5.0.3",
+        "@types/node": "^24.0.13",
+        "@types/ws": "^8.18.1",
+        "@typescript-eslint/eslint-plugin": "^8.36.0",
+        "@typescript-eslint/parser": "^8.36.0",
+        "chokidar": "^3.5.3",
+        "cross-env": "^7.0.3",
+        "esbuild": "^0.20.0",
+        "eslint": "^9.31.0",
+        "eslint-config-prettier": "^10.1.5",
+        "eslint-plugin-prettier": "^5.5.1",
+        "globals": "^16.3.0",
+        "prettier": "^3.6.2",
+        "typescript": "^5.3.3",
+        "typescript-eslint": "^8.36.0"
+    }
 }
