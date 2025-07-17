@@ -103,7 +103,6 @@ async function buildCss() {
             minify: true,
             outfile: `${OUT_DIR}/public/index.css`,
             loader: { '.css': 'css' },
-            plugins: [liveReloadPlugin],
         });
 
         console.log('✅ CSS bundled');
@@ -118,6 +117,7 @@ function startWatchers() {
     chokidar.watch(['frontend/main.css', 'frontend/styles']).on('change', async () => {
         console.log('🎨 CSS changed');
         await buildCss();
+        notifyClients();
     });
 
     chokidar.watch('backend').on('change', async () => {
