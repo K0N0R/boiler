@@ -18,7 +18,7 @@ npm run start
 npm run build
 ```
 
-## Run Relase Build And Start App
+## Run Release Build And Start App
 
 ```bash
 npm run build-run
