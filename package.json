@@ -4,7 +4,7 @@
     "scripts": {
         "start": "cross-env ENV=development node build.development.mjs",
         "build": "cross-env ENV=release node build.release.mjs",
-        "build-run": "npm run build && cd dist/release && node server.js",
+        "build-run": "npm run build && node dist/release/server.js",
         "lint": "eslint . --ext .ts,.mjs,.tsx,.json",
         "lint-fix": "eslint . --ext .ts,.mjs --fix,.tsx --fix,.json --fix"
     },
