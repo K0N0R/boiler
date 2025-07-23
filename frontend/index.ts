@@ -30,7 +30,7 @@ const init = async () => {
     MusicManager.init();
     Time.init();
     await prepreload();
-    core.init();
+    await core.init();
     core.showLoader();
     await preload();
     core.instantinateComponents();

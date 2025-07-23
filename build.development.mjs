@@ -88,6 +88,7 @@ async function buildFrontend() {
             sourcemap: true,
             format: 'esm',
             plugins: [liveReloadPlugin],
+            define: { DEBUG: 'true' },
         });
         console.log('✅ Frontend build');
     } catch (err) {

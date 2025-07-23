@@ -35,9 +35,11 @@ export class Core {
 
         const scaledDeltaMS = deltaMS * this.timeScale;
 
-        EffectsManager.updateFreezable(scaledDeltaMS);
         Time.update(scaledDeltaMS);
-        this.worldContainer.update(scaledDeltaMS);
+        EffectsManager.updateFreezable(scaledDeltaMS);
+        if (this.worldContainer) {
+            this.worldContainer.update(scaledDeltaMS);
+        }
     }
 
     async init() {
@@ -62,6 +64,8 @@ export class Core {
     private instantinateInitialComponents() {
         this.loaderPopup = new LoaderPopup();
         this.welcomePopup = new WelcomePopup();
+        this.hideLoader();
+        this.hideWelcome();
         this.app.stage.addChild(this.loaderPopup, this.welcomePopup);
         this.watchLoaderForResize();
     }
@@ -93,19 +97,19 @@ export class Core {
         this.app.renderer.resize(window.innerWidth, window.innerHeight);
     }
 
-    async showLoader() {
+    showLoader() {
         this.loaderPopup.visible = true;
     }
 
-    async hideLoader() {
+    hideLoader() {
         this.loaderPopup.visible = false;
     }
 
-    async showWelcome() {
+    showWelcome() {
         this.welcomePopup.visible = true;
     }
 
-    async hideWelcome() {
+    hideWelcome() {
         this.welcomePopup.visible = false;
     }
 

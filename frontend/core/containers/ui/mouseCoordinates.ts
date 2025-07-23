@@ -39,9 +39,9 @@ export class MouseCoordinates extends PIXI.Container {
             (message) => {
                 switch (message.name) {
                     case 'pointermove':
-                        this.pointerPosition = (window as any)['devApi'].core.lobbyWorld.toLocal(
-                            message.data,
-                        );
+                        this.pointerPosition = (window as any)[
+                            'devApi'
+                        ].core.worldContainer.toLocal(message.data);
                         this.text.setText(
                             `x:${Math.round(this.pointerPosition.x)}, y: ${Math.round(this.pointerPosition.y)}`,
                         );
