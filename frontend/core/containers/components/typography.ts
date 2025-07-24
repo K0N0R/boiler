@@ -26,7 +26,7 @@ export class Typography extends PIXI.Container {
                 fontSize: this.getFontSize(config.kind),
                 lineHeight: this.getFontSize(config.kind),
                 align: config.horizontalAlign ?? 'center',
-                fontWeight: config.weight ?? 'bold',
+                fontWeight: config.weight ?? 'normal',
                 fill: config.color ?? 0xffffff,
                 ...config.styleProps,
             },

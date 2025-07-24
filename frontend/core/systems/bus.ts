@@ -1,17 +1,9 @@
-import {
-    TEffectsMessage,
-    TGameMessage,
-    TInputMessage,
-    TStateMessage,
-    TUiMessage,
-} from './busInterfaces';
+import { TSystemMessage, TInputMessage, TStateMessage } from './busInterfaces';
 
 export type TBusTopic = {
     input: TInputMessage;
-    ui: TUiMessage;
-    game: TGameMessage;
+    system: TSystemMessage;
     state: TStateMessage;
-    effects: TEffectsMessage;
 };
 
 export type TBusMessage<T extends keyof TBusTopic = keyof TBusTopic> = TBusTopic[T][number];

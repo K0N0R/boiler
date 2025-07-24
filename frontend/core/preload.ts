@@ -7,7 +7,7 @@ const preloadConfig = require('../preload-config.json');
 
 export async function preload() {
     const onProgress = (percentage: number) => {
-        Bus.emit('input', { name: 'preload', data: percentage });
+        Bus.emit('system', { name: 'preload', data: percentage });
     };
     let preload = [...preloadConfig];
 

@@ -1,13 +1,14 @@
 import * as PIXI from 'pixi.js';
-import { BasePopup } from './basePopup';
 import { Typography } from '../components/typography';
 import { EffectsManager } from '../../systems/effectManager';
 import { CoreConfig } from '../../config/coreConfig';
 import { GameState } from '../../systems/gameState';
 
-export class WelcomePopup extends BasePopup {
+export class WelcomePopup extends PIXI.Container {
     plane!: PIXI.Sprite;
     text!: Typography;
+
+    resolve!: () => void; // resolves outside promise
 
     constructor() {
         super();
@@ -32,7 +33,7 @@ export class WelcomePopup extends BasePopup {
         this.plane.alpha = 0;
         this.plane.eventMode = 'static';
         this.plane.on('pointertap', () => {
-            GameState.lobby();
+            this.resolve();
         });
     }
 
@@ -40,8 +41,6 @@ export class WelcomePopup extends BasePopup {
         this.text = new Typography({
             text: 'Click anywhere to start',
             kind: 'big',
-            horizontalAlign: 'center',
-            verticalAlign: 'center',
             styleProps: {
                 dropShadow: {
                     alpha: 0.5,
@@ -52,6 +51,8 @@ export class WelcomePopup extends BasePopup {
                 },
             },
         });
+        this.text.x = CoreConfig.centerX;
+        this.text.y = CoreConfig.centerY;
     }
 
     async startTextAnimation() {

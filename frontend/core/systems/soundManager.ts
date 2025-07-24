@@ -60,6 +60,10 @@ export class SoundManagerBase {
         let assetPath = `${config.soundName}${this.extension}`;
 
         const pixiSound = PIXI.Assets.get(assetPath) as PIXI_SOUND.Sound;
+        if (!pixiSound) {
+            console.warn(assetPath, 'no available assetPath');
+            return;
+        }
         let instance = pixiSound.play({
             volume: fullConfig.volume,
             loop: fullConfig.loop,

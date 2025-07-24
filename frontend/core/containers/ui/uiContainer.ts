@@ -9,7 +9,6 @@ export class UiContainer extends PIXI.Container {
         super();
 
         this.mouseCoordinates = new MouseCoordinates(); // for debug purpouses
-        this.mouseCoordinates.visible = false;
 
         this.addChild(this.mouseCoordinates);
         this.bindEvents();
@@ -31,8 +30,5 @@ export class UiContainer extends PIXI.Container {
 
     update(deltaMS: number) {}
 
-    onResize(width: number, height: number) {
-        this.mouseCoordinates.x = 25;
-        this.mouseCoordinates.y = 25;
-    }
+    onResize(width: number, height: number) {}
 }

@@ -5,9 +5,9 @@ import { preload } from './core/preload';
 import { InputHandler } from './core/systems/inputHandler';
 import { MusicManager } from './core/systems/musicManager';
 import { SoundManager } from './core/systems/soundManager';
-import { Time } from './core/systems/time';
 import { prepreload } from './core/prepreload';
 import { GameSettings } from './core/systems/gameSettings';
+import { GameState } from './core/systems/gameState';
 
 const init = async () => {
     const core = new Core();
@@ -28,13 +28,14 @@ const init = async () => {
     InputHandler.init();
     SoundManager.init();
     MusicManager.init();
-    Time.init();
     await prepreload();
     await core.init();
+    globalThis.__PIXI_APP__ = core.app; // for pixi chrome plugin to work, can be behind DEBUG flag
     core.showLoader();
     await preload();
     core.instantinateComponents();
     core.hideLoader();
-    core.showWelcome();
+    await core.showWelcome();
+    GameState.goToLobby();
 };
 init();

@@ -2,11 +2,13 @@ import { Tween, Interpolation, Easing, Group } from '@tweenjs/tween.js';
 import * as PIXI from 'pixi.js';
 import { IPosition, MathUtils } from 'frontend/common';
 
+type TEffectConfigGroup = 'gameplay' | 'ui';
+
 export type TBaseEffectConfig = {
     durationMS: number;
     easing?: (number: number) => number;
     interpolation?: any;
-    freezable?: boolean;
+    group?: TEffectConfigGroup;
 };
 
 type TAffectedCoordinatesObject = PIXI.Container | IPosition;
@@ -23,11 +25,11 @@ export class EffectsManagerBase {
 
     private runningEffects: TRunningEffect[] = [];
 
-    private freezableGroup = new Group();
-    private nonFreezableGroup = new Group();
+    private gameplayGroup = new Group();
+    private uiGroup = new Group();
 
-    private freezableTimer = 0;
-    private nonFreezableTimer = 0;
+    private gameplayTimer = 0;
+    private uiTimer = 0;
 
     clearAllEffects() {
         this.runningEffects.forEach((effect) => effect.tween.stop());
@@ -39,14 +41,14 @@ export class EffectsManagerBase {
             .forEach((effect) => effect.tween.stop());
     }
 
-    updateFreezable(deltaMS: number) {
-        this.freezableTimer += deltaMS;
-        this.freezableGroup.update(this.freezableTimer);
+    updateGameplay(deltaMS: number) {
+        this.gameplayTimer += deltaMS;
+        this.gameplayGroup.update(this.gameplayTimer);
     }
 
-    updateNonFreezable(deltaMS: number) {
-        this.nonFreezableTimer += deltaMS;
-        this.nonFreezableGroup.update(this.nonFreezableTimer);
+    updateUi(deltaMS: number) {
+        this.uiTimer += deltaMS;
+        this.uiGroup.update(this.uiTimer);
     }
 
     async moveTrajectory(
@@ -311,13 +313,13 @@ export class EffectsManagerBase {
     ) {
         const effectConfigDefaults = {
             easing: Easing.Linear.None,
-            freezable: true,
+            group: 'ui' as TEffectConfigGroup,
         };
 
         const fullConfig = { ...effectConfigDefaults, ...config };
 
-        const group = fullConfig.freezable ? this.freezableGroup : this.nonFreezableGroup;
-        const timer = fullConfig.freezable ? this.freezableTimer : this.nonFreezableTimer;
+        const group = this.getGroup(fullConfig.group);
+        const timer = this.getGroupTimer(fullConfig.group);
 
         return new Promise<void>((resolve) => {
             const tween = new Tween(fullConfig.from, group)
@@ -336,6 +338,24 @@ export class EffectsManagerBase {
                 displayObject: config.obj,
             });
         });
+    }
+
+    private getGroup(groupName: TEffectConfigGroup) {
+        switch (groupName) {
+            case 'gameplay':
+                return this.gameplayGroup;
+            case 'ui':
+                return this.uiGroup;
+        }
+    }
+
+    private getGroupTimer(groupName: TEffectConfigGroup) {
+        switch (groupName) {
+            case 'gameplay':
+                return this.gameplayTimer;
+            case 'ui':
+                return this.uiTimer;
+        }
     }
 }
 

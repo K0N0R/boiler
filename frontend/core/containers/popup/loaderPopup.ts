@@ -1,9 +1,9 @@
-import { BasePopup } from './basePopup';
+import * as PIXI from 'pixi.js';
 import { ProgressBar } from '../components/progressBar';
 import { Bus } from '../../systems/bus';
 import { CoreConfig } from '../../config/coreConfig';
 
-export class LoaderPopup extends BasePopup {
+export class LoaderPopup extends PIXI.Container {
     progressBar!: ProgressBar;
 
     constructor() {
@@ -15,7 +15,7 @@ export class LoaderPopup extends BasePopup {
 
     bindEvents() {
         Bus.subscribe(
-            'input',
+            'system',
             (message) => {
                 switch (message.name) {
                     case 'preload': {

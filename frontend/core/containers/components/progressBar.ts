@@ -1,5 +1,6 @@
 import * as PIXI from 'pixi.js';
 import { Box } from './box';
+import { CoreConfig } from 'frontend/core/config/coreConfig';
 
 interface IProgressBarParams {
     width: number;
@@ -23,9 +24,9 @@ export class ProgressBar extends PIXI.Container {
             width: 200,
             height: 50,
             oulineWidth: 6,
-            outlineColor: 0xffffff,
-            fillColor: 0x42b0ff,
-            roundness: 15,
+            outlineColor: CoreConfig.primaryContrastColor,
+            fillColor: CoreConfig.primaryColor,
+            roundness: CoreConfig.roundness,
         };
 
         const mergedConfig = {

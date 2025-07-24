@@ -3,12 +3,14 @@ import * as PIXI from 'pixi.js';
 import { UiContainer } from './containers/ui/uiContainer';
 
 import { Bus } from './systems/bus';
-import { Time } from './systems/time';
+import { UiTime, WorldTime } from './systems/time';
 import { EffectsManager } from './systems/effectManager';
 import { CoreConfig } from './config/coreConfig';
 import { WorldContainer } from './containers/world/worldContainer';
 import { LoaderPopup } from './containers/popup/loaderPopup';
 import { WelcomePopup } from './containers/popup/welcomePopup';
+import { GameState } from './systems/gameState';
+import { JsUtils } from 'frontend/common';
 
 export class Core {
     app!: PIXI.Application;
@@ -19,6 +21,7 @@ export class Core {
     uiContainer!: UiContainer;
     loaderPopup!: LoaderPopup;
     welcomePopup!: WelcomePopup;
+    scallableContainers: PIXI.Container[] = [];
 
     update(ticker: PIXI.Ticker) {
         const deltaTargetFrame = ticker.deltaTime;
@@ -28,23 +31,26 @@ export class Core {
             return;
         }
 
-        EffectsManager.updateNonFreezable(deltaMS);
+        UiTime.update(deltaMS);
+        EffectsManager.updateUi(deltaMS);
+        this.uiContainer?.update(deltaMS);
 
-        if (this.loaderPopup.visible) this.loaderPopup.update(deltaMS);
-        if (this.uiContainer) this.uiContainer.update(deltaMS);
+        if (GameState.state === 'initialization') {
+            if (this.loaderPopup.visible) this.loaderPopup.update(deltaMS);
+            if (this.welcomePopup.visible) this.welcomePopup.update(deltaMS);
+        } else {
+            const scaledDeltaMS = deltaMS * this.timeScale;
 
-        const scaledDeltaMS = deltaMS * this.timeScale;
-
-        Time.update(scaledDeltaMS);
-        EffectsManager.updateFreezable(scaledDeltaMS);
-        if (this.worldContainer) {
-            this.worldContainer.update(scaledDeltaMS);
+            WorldTime.update(scaledDeltaMS);
+            EffectsManager.updateGameplay(scaledDeltaMS);
+            this.worldContainer?.update(scaledDeltaMS);
         }
     }
 
     async init() {
         await this.instantinateApp();
         this.instantinateInitialComponents();
+        this.watchContainersForResize();
         this.app.ticker.add(this.update.bind(this));
         this.bindEvents();
     }
@@ -67,30 +73,20 @@ export class Core {
         this.hideLoader();
         this.hideWelcome();
         this.app.stage.addChild(this.loaderPopup, this.welcomePopup);
-        this.watchLoaderForResize();
+        this.scallableContainers.push(this.loaderPopup, this.welcomePopup);
     }
 
     public instantinateComponents() {
         this.uiContainer = new UiContainer();
         this.worldContainer = new WorldContainer();
         this.app.stage.addChild(this.worldContainer, this.uiContainer);
-
-        this.watchContainersForResize();
-    }
-
-    private watchLoaderForResize() {
-        this.app.renderer.on('resize', (width, height) => {
-            this.calculateObjectRatio(this.loaderPopup, width, height);
-        });
-        this.app.renderer.resize(window.innerWidth, window.innerHeight);
+        this.scallableContainers.push(this.uiContainer);
     }
 
     private watchContainersForResize() {
-        const scallableToRatio = [this.uiContainer];
-
         this.app.renderer.on('resize', (width, height) => {
             Bus.emit('input', { name: 'resize', data: { width, height } });
-            scallableToRatio.forEach((scallable) => {
+            this.scallableContainers.forEach((scallable) => {
                 this.calculateObjectRatio(scallable, width, height);
             });
         });
@@ -105,8 +101,14 @@ export class Core {
         this.loaderPopup.visible = false;
     }
 
-    showWelcome() {
+    async showWelcome() {
+        const promise = JsUtils.createPromise();
+
+        this.welcomePopup.resolve = promise.resolve;
         this.welcomePopup.visible = true;
+
+        await promise.promise;
+        this.welcomePopup.visible = false;
     }
 
     hideWelcome() {
@@ -115,7 +117,7 @@ export class Core {
 
     bindEvents() {
         Bus.subscribe(
-            'effects',
+            'system',
             (message) => {
                 switch (message.name) {
                     case 'time-scale': {

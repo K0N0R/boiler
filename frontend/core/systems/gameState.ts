@@ -1,11 +1,18 @@
 import { Bus } from './bus';
 
-type TGameState = 'lobby' | 'game' | 'pause' | 'end';
+type TGameState = 'initialization' | 'lobby' | 'gameplay';
 
 export class GameStateBase {
-    state: TGameState = 'pause';
-    lobby() {
+    state: TGameState = 'initialization';
+
+    goToLobby() {
         this.state = 'lobby';
+        Bus.emit('state', { name: 'lobby-start' });
+    }
+
+    goToGameplay() {
+        this.state = 'gameplay';
+        Bus.emit('state', { name: 'gameplay-start' });
     }
 
     update(deltaMS: number) {}

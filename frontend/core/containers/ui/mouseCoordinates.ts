@@ -11,15 +11,20 @@ export class MouseCoordinates extends PIXI.Container {
         if (DEBUG) {
             this.createComponents();
             this.bindEvents();
+
+            this.x = 5;
+            this.y = 5;
+            this.visible = DEBUG;
         }
     }
 
     private createComponents() {
         this.text = new Typography({
             text: '',
-            kind: 'big',
+            kind: 'normal',
             horizontalAlign: 'left',
-            verticalAlign: 'center',
+            verticalAlign: 'top',
+            color: 0xffffff,
             styleProps: {
                 dropShadow: {
                     alpha: 0.5,

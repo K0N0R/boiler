@@ -2,10 +2,6 @@ export class TimeBase {
     timeCounterMS = 0;
     timeouts: { timeout: number; callback: () => void; group?: string; id: string }[] = [];
 
-    init() {
-        this.clear();
-    }
-
     update(deltaMS: number) {
         this.timeCounterMS += deltaMS;
         this.timeouts.forEach((c) => {
@@ -56,4 +52,5 @@ export class TimeBase {
     }
 }
 
-export const Time = new TimeBase();
+export const WorldTime = new TimeBase();
+export const UiTime = new TimeBase();

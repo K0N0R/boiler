@@ -1,11 +1,11 @@
+import * as PIXI_SOUND from '@pixi/sound';
 import { Bus } from './bus';
 import { EffectsManager } from './effectManager';
 import { SoundManager, TSound } from './soundManager';
-import * as PIXI_SOUND from '@pixi/sound';
 
 export class MusicManagerBase {
     musicIndex = 0;
-    runMusics = [];
+    gameplayMusics = [];
     lobbyMusic = [];
 
     currentMusic?: TSound;
@@ -24,8 +24,8 @@ export class MusicManagerBase {
             'state',
             (message) => {
                 switch (message.name) {
-                    case 'run-start':
-                        this.triggerRunMusicLoop();
+                    case 'gameplay-start':
+                        this.triggerGameplayMusicLoop();
                         break;
                     case 'lobby-start':
                         this.triggerLobbyMusicLoop();
@@ -36,7 +36,7 @@ export class MusicManagerBase {
         );
     }
 
-    public async triggerRunMusicLoop() {
+    public async triggerGameplayMusicLoop() {
         if (this.isPlayingLobbyMusic) {
             if (this.currentMusic?.group) {
                 this.currentMusic.triggerOnEnd = false;
@@ -52,7 +52,7 @@ export class MusicManagerBase {
     }
 
     public async playRunMusicInLoop() {
-        this.playRunMusic(this.runMusics[this.musicIndex]);
+        this.playRunMusic(this.gameplayMusics[this.musicIndex]);
     }
 
     async playRunMusic(music: string) {
@@ -63,7 +63,9 @@ export class MusicManagerBase {
             group: 'music',
             onEnd: () => {
                 this.musicIndex =
-                    (this.musicIndex + 1) % this.runMusics.length === 0 ? 0 : this.musicIndex + 1;
+                    (this.musicIndex + 1) % this.gameplayMusics.length === 0
+                        ? 0
+                        : this.musicIndex + 1;
                 this.playRunMusicInLoop();
             },
         });
@@ -107,7 +109,7 @@ export class MusicManagerBase {
         const to = way === 'in' ? 1 : 0;
         const promise = EffectsManager.callback(
             this,
-            { from, to, durationMS: 1000, freezable: false },
+            { from, to, durationMS: 1000, group: 'ui' },
             (value) => {
                 this.filter.f32 = value * 7;
                 this.filter.f64 = value * 5;
