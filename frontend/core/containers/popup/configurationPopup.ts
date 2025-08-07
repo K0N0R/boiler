@@ -1,9 +1,15 @@
+import * as PIXI from 'pixi.js';
 import { Typography } from '../components/typography';
 import { Box } from '../components/box';
 import { Button } from '../components/button';
-
 import { CoreConfig } from 'frontend/core/config/coreConfig';
 import { BasePopup } from './basePopup';
+import { MessageBox } from '../components/messageBox';
+import { Slider } from '../components/slider';
+import { ProgressBar } from '../components/progressBar';
+import { EffectsManager } from 'frontend/core/systems/effectManager';
+import { ListSelect } from '../components/listSelect';
+import { ListSelectItem } from '../components/listSelectItem';
 
 export class ConfigurationPopup extends BasePopup {
     box!: Box;
@@ -13,12 +19,13 @@ export class ConfigurationPopup extends BasePopup {
     constructor() {
         super();
         this.createBaseComponents();
+        this.createAdvancedComponents();
     }
 
     createBaseComponents(): void {
         this.box = new Box({
-            x: CoreConfig.width / 2,
-            y: CoreConfig.height / 2,
+            x: CoreConfig.centerX,
+            y: CoreConfig.centerY,
             width: CoreConfig.width - CoreConfig.width * 0.1,
             height: CoreConfig.height - CoreConfig.height * 0.1,
             alpha: 0.95,
@@ -32,7 +39,9 @@ export class ConfigurationPopup extends BasePopup {
             width: 50,
             height: 50,
             onClick: () => {
-                this.promise.resolve();
+                this.progressBarPercent += 0.1;
+                this.progressBar.updatePercentage(this.progressBarPercent);
+                //this.promise.resolve();
             },
             roundness: 100,
             alpha: 1,
@@ -41,9 +50,81 @@ export class ConfigurationPopup extends BasePopup {
 
         this.addChild(this.closeButton);
 
-        this.title = new Typography({ text: 'Configuration', color: 0x000000 });
+        this.title = new Typography({ text: 'Configuration', color: 0x000000, size: 36 });
         this.title.x = CoreConfig.width / 2;
         this.title.y = CoreConfig.height * 0.1;
         this.addChild(this.title);
+
+        this.title.eventMode = 'dynamic';
+
+        this.title.on('click', async () => {
+            const selectList = new ListSelect({
+                x: this.title.x,
+                y: this.title.y,
+                items: [
+                    new ListSelectItem(
+                        new Button({ width: 100, children: [new Typography({ text: 'first' })] }),
+                        'first',
+                    ),
+                    new ListSelectItem(
+                        new Button({ width: 100, children: [new Typography({ text: 'second' })] }),
+                        'second',
+                    ),
+                    new ListSelectItem(
+                        new Button({ width: 100, children: [new Typography({ text: 'third' })] }),
+                        'third',
+                    ),
+                ],
+                onSelect: (metadata) => {
+                    console.log(metadata);
+                },
+            });
+            this.addChild(selectList);
+
+            await EffectsManager.scale(this.title, {
+                x: 1.1,
+                y: 1.1,
+                durationMS: 1000,
+            });
+            await EffectsManager.scale(this.title, {
+                x: 1,
+                y: 1,
+                durationMS: 1000,
+            });
+        });
+    }
+
+    // testing
+
+    advancedContainer!: PIXI.Container;
+    slider!: Slider;
+    progressBar!: ProgressBar;
+    progressBarPercent = 0;
+
+    private createAdvancedComponents() {
+        this.advancedContainer = new PIXI.Container();
+        this.addChild(this.advancedContainer);
+
+        const messageBox = new MessageBox({ text: 'Lorem Ipsum les ma nore, a ja nos tre.' });
+        messageBox.x = CoreConfig.centerX;
+        messageBox.y = CoreConfig.centerY - 200;
+        this.advancedContainer.addChild(messageBox);
+
+        const slider = new Slider({ sliderWidth: 50 }, 0.5, () => {});
+        slider.x = CoreConfig.centerX;
+        slider.y = CoreConfig.centerY;
+        this.advancedContainer.addChild(slider);
+        this.slider = slider;
+
+        const progressBar = new ProgressBar({ outlineWidth: 10 });
+        progressBar.x = CoreConfig.centerX;
+        progressBar.y = CoreConfig.centerY + 100;
+        this.advancedContainer.addChild(progressBar);
+        this.progressBar = progressBar;
+    }
+
+    update(deltaMS: number) {
+        this.slider.update(deltaMS);
+        this.progressBar.update(deltaMS);
     }
 }

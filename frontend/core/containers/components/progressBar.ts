@@ -5,7 +5,7 @@ import { CoreConfig } from 'frontend/core/config/coreConfig';
 interface IProgressBarParams {
     width: number;
     height: number;
-    oulineWidth: number;
+    outlineWidth: number;
     outlineColor: number;
     fillColor: number;
     roundness: number;
@@ -23,7 +23,7 @@ export class ProgressBar extends PIXI.Container {
         const defaultConfig = {
             width: 200,
             height: 50,
-            oulineWidth: 6,
+            outlineWidth: 6,
             outlineColor: CoreConfig.primaryContrastColor,
             fillColor: CoreConfig.primaryColor,
             roundness: CoreConfig.roundness,
@@ -39,11 +39,12 @@ export class ProgressBar extends PIXI.Container {
 
     createComponents(config: IProgressBarParams) {
         this.boxOutline = new Box({
-            width: config.width + config.oulineWidth,
-            height: config.height + config.oulineWidth,
+            width: config.width + config.outlineWidth,
+            height: config.height + config.outlineWidth,
             tint: config.outlineColor,
             alpha: 1,
             roundness: config.roundness,
+            anchor: 'leftTop',
         });
         this.boxFill = new Box({
             width: config.width,
@@ -51,6 +52,7 @@ export class ProgressBar extends PIXI.Container {
             tint: config.fillColor,
             alpha: 1,
             roundness: 0,
+            anchor: 'leftTop',
         });
         this.boxMask = new Box({
             width: config.width,
@@ -58,12 +60,13 @@ export class ProgressBar extends PIXI.Container {
             tint: 0xffffff,
             alpha: 1,
             roundness: config.roundness,
+            anchor: 'leftTop',
         });
         this.boxFill.mask = this.boxMask;
         this.boxFill.width = 0;
         this.updatePercentage(0);
-        this.boxOutline.x = -config.oulineWidth / 2;
-        this.boxOutline.y = -config.oulineWidth / 2;
+        this.boxOutline.x = -config.outlineWidth / 2;
+        this.boxOutline.y = -config.outlineWidth / 2;
         this.addChild(this.boxOutline, this.boxMask, this.boxFill);
     }
 

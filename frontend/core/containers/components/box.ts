@@ -47,12 +47,13 @@ export class Box extends PIXI.Container {
         this.y = config.y;
     }
 
-    updateBox(config: IBoxParams) {
+    updateBox(config: Partial<IBoxParams>) {
         this.config = {
+            ...this.config,
             ...config,
         };
 
         this.removeChild(this.box);
-        this.createBox(config);
+        this.createBox(this.config);
     }
 }

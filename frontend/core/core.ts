@@ -8,7 +8,6 @@ import { EffectsManager } from './systems/effectManager';
 import { CoreConfig } from './config/coreConfig';
 import { WorldContainer } from './containers/world/worldContainer';
 import { GameState } from './systems/gameState';
-
 import { PopupContainer } from './containers/popup/popupContainer';
 
 export class Core {
@@ -18,23 +17,21 @@ export class Core {
     worldContainer!: WorldContainer;
 
     uiContainer!: UiContainer;
+    popupContainer = PopupContainer.instance;
     scalableContainers: PIXI.Container[] = [];
 
     update(ticker: PIXI.Ticker) {
-        const deltaTargetFrame = ticker.deltaTime;
-        const deltaMS = (deltaTargetFrame * 1000) / 60;
-
-        if (deltaMS > 100) {
+        if (ticker.deltaMS > 100) {
             return;
         }
-
-        UiTime.update(deltaMS);
-        EffectsManager.updateUi(deltaMS);
-        this.uiContainer?.update(deltaMS);
+        UiTime.update(ticker.deltaMS);
+        EffectsManager.updateUi(ticker.deltaMS);
+        this.uiContainer?.update(ticker.deltaMS);
+        this.popupContainer.update(ticker.deltaMS);
 
         if (GameState.state === 'initialization') {
         } else {
-            const scaledDeltaMS = deltaMS * this.timeScale;
+            const scaledDeltaMS = ticker.deltaMS * this.timeScale;
 
             WorldTime.update(scaledDeltaMS);
             EffectsManager.updateGameplay(scaledDeltaMS);

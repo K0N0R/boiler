@@ -1,37 +1,56 @@
 import * as PIXI from 'pixi.js';
 
-type TTypographyTextSize = 'normal' | 'huge' | 'big' | 'small' | 'tiny';
+type TTypographyTextSize = 'tiny' | 'small' | 'normal' | 'big' | 'huge';
 
 type TTypographyHorizontalAlign = 'left' | 'center' | 'right';
 type TTypographyVerticalAlign = 'top' | 'center' | 'bottom';
+type TTypographyFontWeight = 'bold' | 'normal';
+
+interface ITypographyParams {
+    text: string | number;
+    size: number;
+    fontFamily: string;
+    horizontalAlign: TTypographyHorizontalAlign;
+    verticalAlign: TTypographyVerticalAlign;
+    color: number;
+    weight: TTypographyFontWeight;
+    styleProps?: Partial<PIXI.TextStyle> | PIXI.TextStyle;
+}
 
 export class Typography extends PIXI.Container {
     private text: PIXI.Text;
 
-    constructor(config: {
-        text: string | number;
-        kind?: TTypographyTextSize;
-        horizontalAlign?: TTypographyHorizontalAlign;
-        verticalAlign?: TTypographyVerticalAlign;
-        color?: number;
-        weight?: 'bold' | 'normal';
-        styleProps?: Partial<PIXI.TextStyle> | PIXI.TextStyle;
-    }) {
+    private scaleRatio = 2;
+
+    config: ITypographyParams;
+
+    constructor(config: Partial<ITypographyParams>) {
         super();
+
+        this.config = {
+            text: '',
+            fontFamily: 'Trebuchet MS',
+            size: 26,
+            horizontalAlign: 'center',
+            verticalAlign: 'center',
+            weight: 'normal',
+            color: 0xffffff,
+            ...config,
+        };
 
         this.text = new PIXI.Text({
             text: config.text,
             style: {
-                fontFamily: 'Trebuchet MS',
-                fontSize: this.getFontSize(config.kind),
-                lineHeight: this.getFontSize(config.kind),
-                align: config.horizontalAlign ?? 'center',
-                fontWeight: config.weight ?? 'normal',
-                fill: config.color ?? 0xffffff,
+                fontFamily: this.config.fontFamily,
+                fontSize: this.getFontSize(this.config.size),
+                lineHeight: this.getFontSize(this.config.size),
+                align: this.config.horizontalAlign,
+                fontWeight: this.config.weight,
+                fill: this.config.color,
                 ...config.styleProps,
             },
         });
-        this.text.scale.set(0.5);
+        this.text.scale.set(1 / this.scaleRatio);
 
         this.text.anchor.set(
             this.getHorizontalAnchor(config.horizontalAlign),
@@ -50,21 +69,8 @@ export class Typography extends PIXI.Container {
         this.text.style.fill = color;
     }
 
-    private getFontSize(kind?: TTypographyTextSize) {
-        switch (kind) {
-            case 'huge':
-                return 92;
-            case 'big':
-                return 72;
-            case 'normal':
-                return 52;
-            case 'small':
-                return 32;
-            case 'tiny':
-                return 20;
-            default:
-                return 52;
-        }
+    private getFontSize(size: number) {
+        return size * this.scaleRatio;
     }
 
     private getHorizontalAnchor = (horizontalAlign?: TTypographyHorizontalAlign) => {

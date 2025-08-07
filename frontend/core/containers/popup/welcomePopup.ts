@@ -38,7 +38,7 @@ export class WelcomePopup extends BasePopup {
     private createText() {
         this.text = new Typography({
             text: 'Click anywhere to start',
-            kind: 'big',
+            size: 36,
             styleProps: {
                 dropShadow: {
                     alpha: 0.5,

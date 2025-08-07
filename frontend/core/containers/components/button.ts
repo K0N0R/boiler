@@ -46,45 +46,55 @@ export class Button extends PIXI.Container {
             x: 0,
             y: 0,
         });
-        this.box.eventMode = 'static';
-
-        const onHover = () => {
-            EffectsManager.scale(this, {
-                x: 1.1,
-                y: 1.1,
-                durationMS: 200,
-                group: config.group,
-            });
-            if (config.onHover) config.onHover();
-        };
-        const onHoverEnd = () => {
-            EffectsManager.scale(this, {
-                x: 1,
-                y: 1,
-                durationMS: 200,
-                group: config.group,
-            });
-            if (config.onHoverEnd) config.onHoverEnd();
-        };
-        const onClick = () => {
-            if (config.onClick) {
-                config.onClick();
-            }
-        };
-
-        this.box.on('pointerenter', onHover);
-        this.box.on('pointerleave', onHoverEnd);
-        this.box.on('pointercancel', onHoverEnd);
-        this.box.on('pointercancelcapture', onHoverEnd);
-
-        this.box.on('pointertap', onClick);
 
         this.addChild(this.box);
 
         if (Array.isArray(config.children) && config.children.length > 0) {
             this.addChild(...config.children.map(PixiUtils.applyExtendedDisplayObjectParams));
         }
+
         this.x = this.config.x;
         this.y = this.config.y;
+
+        this.setInteractions();
+    }
+
+    setInteractions() {
+        const onHover = async () => {
+            if (this.config.onHover) this.config.onHover();
+
+            EffectsManager.clearAllEffectsFromContainer(this);
+            await EffectsManager.scale(this.box, {
+                x: 1.2,
+                y: 1.2,
+                durationMS: 200,
+                group: this.config.group,
+            });
+        };
+
+        const onHoverEnd = async () => {
+            if (this.config.onHoverEnd) this.config.onHoverEnd();
+
+            EffectsManager.clearAllEffectsFromContainer(this);
+            await EffectsManager.scale(this.box, {
+                x: 1,
+                y: 1,
+                durationMS: 200,
+                group: this.config.group,
+            });
+        };
+
+        const onClick = async () => {
+            if (this.config.onClick) {
+                this.config.onClick();
+            }
+        };
+
+        this.box.eventMode = 'static';
+        this.box.on('pointerenter', onHover);
+        this.box.on('pointerleave', onHoverEnd);
+        this.box.on('pointercancel', onHoverEnd);
+        this.box.on('pointercancelcapture', onHoverEnd);
+        this.box.on('pointertap', onClick);
     }
 }

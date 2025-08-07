@@ -20,8 +20,6 @@ export class MouseCoordinates extends PIXI.Container {
 
     private createComponents() {
         this.text = new Typography({
-            text: '',
-            kind: 'normal',
             horizontalAlign: 'left',
             verticalAlign: 'top',
             color: 0xffffff,

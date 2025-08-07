@@ -28,8 +28,8 @@ export class Slider extends PIXI.Container {
 
     constructor(
         config: Partial<ISliderParams>,
-        private onUpdate: (percentage: number) => void,
         initialPercentage: number,
+        private onUpdate: (percentage: number) => void,
     ) {
         super();
         const defaultConfig: ISliderParams = {
@@ -73,6 +73,7 @@ export class Slider extends PIXI.Container {
             tint: config.outlineColor,
             alpha: config.outlineAlpha,
             roundness: config.roundness,
+            anchor: 'leftTop',
         });
         this.boxFill = new Box({
             width: 15,
@@ -80,6 +81,7 @@ export class Slider extends PIXI.Container {
             tint: config.fillColor,
             alpha: 1,
             roundness: 0,
+            anchor: 'leftTop',
         });
         this.boxMask = new Box({
             width: config.width,
@@ -87,6 +89,7 @@ export class Slider extends PIXI.Container {
             tint: 0xffffff,
             alpha: 1,
             roundness: config.roundness,
+            anchor: 'leftTop',
         });
         this.boxFill.mask = this.boxMask;
         this.slider = new Box({
@@ -94,6 +97,7 @@ export class Slider extends PIXI.Container {
             height: config.height * 1.1,
             tint: 0xffffff,
             alpha: 1,
+            anchor: 'leftTop',
         });
         this.slider.y = -config.height * 0.05;
 
