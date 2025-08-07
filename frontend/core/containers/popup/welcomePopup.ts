@@ -2,13 +2,11 @@ import * as PIXI from 'pixi.js';
 import { Typography } from '../components/typography';
 import { EffectsManager } from '../../systems/effectManager';
 import { CoreConfig } from '../../config/coreConfig';
-import { GameState } from '../../systems/gameState';
+import { BasePopup } from './basePopup';
 
-export class WelcomePopup extends PIXI.Container {
+export class WelcomePopup extends BasePopup {
     plane!: PIXI.Sprite;
     text!: Typography;
-
-    resolve!: () => void; // resolves outside promise
 
     constructor() {
         super();
@@ -33,7 +31,7 @@ export class WelcomePopup extends PIXI.Container {
         this.plane.alpha = 0;
         this.plane.eventMode = 'static';
         this.plane.on('pointertap', () => {
-            this.resolve();
+            this.promise.resolve();
         });
     }
 
@@ -60,6 +58,4 @@ export class WelcomePopup extends PIXI.Container {
         await EffectsManager.alpha(this.text, { alpha: 1, durationMS: 3000 });
         this.startTextAnimation();
     }
-
-    update(deltaMS: number) {}
 }

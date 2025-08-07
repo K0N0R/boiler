@@ -1,16 +1,12 @@
 import * as PIXI from 'pixi.js';
-import { JsUtils } from 'frontend/common';
+import { IPromise, JsUtils } from 'frontend/common';
 
 export class BasePopup extends PIXI.Container {
-    resolveMenu = JsUtils.noop;
+    promise!: IPromise;
 
-    update(deltaMS: number) {}
-
-    show() {
-        const { promise, resolve, reject } = JsUtils.createPromise();
-        this.resolveMenu = resolve;
-        return promise;
-    }
+    show() {}
 
     createBaseComponents() {}
+
+    update(deltaMS: number) {}
 }

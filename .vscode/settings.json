@@ -5,5 +5,9 @@
     },
     "editor.formatOnSave": true,
     "eslint.validate": ["javascript", "typescript"],
-    "prettier.requireConfig": true
+    "prettier.requireConfig": true,
+    "cSpell.words": [
+        "PIXI",
+        "prepreload"
+    ]
 }

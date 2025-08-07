@@ -7,10 +7,9 @@ import { UiTime, WorldTime } from './systems/time';
 import { EffectsManager } from './systems/effectManager';
 import { CoreConfig } from './config/coreConfig';
 import { WorldContainer } from './containers/world/worldContainer';
-import { LoaderPopup } from './containers/popup/loaderPopup';
-import { WelcomePopup } from './containers/popup/welcomePopup';
 import { GameState } from './systems/gameState';
-import { JsUtils } from 'frontend/common';
+
+import { PopupContainer } from './containers/popup/popupContainer';
 
 export class Core {
     app!: PIXI.Application;
@@ -19,9 +18,7 @@ export class Core {
     worldContainer!: WorldContainer;
 
     uiContainer!: UiContainer;
-    loaderPopup!: LoaderPopup;
-    welcomePopup!: WelcomePopup;
-    scallableContainers: PIXI.Container[] = [];
+    scalableContainers: PIXI.Container[] = [];
 
     update(ticker: PIXI.Ticker) {
         const deltaTargetFrame = ticker.deltaTime;
@@ -36,8 +33,6 @@ export class Core {
         this.uiContainer?.update(deltaMS);
 
         if (GameState.state === 'initialization') {
-            if (this.loaderPopup.visible) this.loaderPopup.update(deltaMS);
-            if (this.welcomePopup.visible) this.welcomePopup.update(deltaMS);
         } else {
             const scaledDeltaMS = deltaMS * this.timeScale;
 
@@ -48,14 +43,14 @@ export class Core {
     }
 
     async init() {
-        await this.instantinateApp();
-        this.instantinateInitialComponents();
+        await this.instantiateApp();
+        this.instantiateInitialComponents();
         this.watchContainersForResize();
         this.app.ticker.add(this.update.bind(this));
         this.bindEvents();
     }
 
-    async instantinateApp() {
+    async instantiateApp() {
         this.app = new PIXI.Application();
         await this.app.init({
             resizeTo: window,
@@ -67,52 +62,26 @@ export class Core {
         document.body.appendChild(this.app.canvas);
     }
 
-    private instantinateInitialComponents() {
-        this.loaderPopup = new LoaderPopup();
-        this.welcomePopup = new WelcomePopup();
-        this.hideLoader();
-        this.hideWelcome();
-        this.app.stage.addChild(this.loaderPopup, this.welcomePopup);
-        this.scallableContainers.push(this.loaderPopup, this.welcomePopup);
+    private instantiateInitialComponents() {
+        this.app.stage.addChild(PopupContainer.instance);
+        this.scalableContainers.push(PopupContainer.instance);
     }
 
-    public instantinateComponents() {
+    public instantiateComponents() {
         this.uiContainer = new UiContainer();
         this.worldContainer = new WorldContainer();
         this.app.stage.addChild(this.worldContainer, this.uiContainer);
-        this.scallableContainers.push(this.uiContainer);
+        this.scalableContainers.push(this.uiContainer);
     }
 
     private watchContainersForResize() {
         this.app.renderer.on('resize', (width, height) => {
             Bus.emit('input', { name: 'resize', data: { width, height } });
-            this.scallableContainers.forEach((scallable) => {
-                this.calculateObjectRatio(scallable, width, height);
+            this.scalableContainers.forEach((scalable) => {
+                this.calculateObjectRatio(scalable, width, height);
             });
         });
         this.app.renderer.resize(window.innerWidth, window.innerHeight);
-    }
-
-    showLoader() {
-        this.loaderPopup.visible = true;
-    }
-
-    hideLoader() {
-        this.loaderPopup.visible = false;
-    }
-
-    async showWelcome() {
-        const promise = JsUtils.createPromise();
-
-        this.welcomePopup.resolve = promise.resolve;
-        this.welcomePopup.visible = true;
-
-        await promise.promise;
-        this.welcomePopup.visible = false;
-    }
-
-    hideWelcome() {
-        this.welcomePopup.visible = false;
     }
 
     bindEvents() {

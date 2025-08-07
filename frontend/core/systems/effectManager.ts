@@ -2,7 +2,7 @@ import { Tween, Interpolation, Easing, Group } from '@tweenjs/tween.js';
 import * as PIXI from 'pixi.js';
 import { IPosition, MathUtils } from 'frontend/common';
 
-type TEffectConfigGroup = 'gameplay' | 'ui';
+export type TEffectConfigGroup = 'gameplay' | 'ui';
 
 export type TBaseEffectConfig = {
     durationMS: number;

@@ -1,5 +1,11 @@
 import { IPosition } from './mathUtils';
 
+export interface IPromise {
+    promise: Promise<unknown>;
+    resolve: () => void;
+    reject: () => void;
+}
+
 export namespace JsUtils {
     export function noop() {}
 
@@ -28,7 +34,7 @@ export namespace JsUtils {
         return result;
     }
 
-    export function createPromise() {
+    export function createPromise(): IPromise {
         let resolveMe: (value?: unknown) => void = noop;
         let rejectMe: (value?: unknown) => void = noop;
 
