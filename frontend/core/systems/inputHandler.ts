@@ -88,7 +88,7 @@ export class InputHandlerBase {
         };
 
         const onMouseWheel = (evt: WheelEvent) => {
-            Bus.emit('input', { name: 'scroll', data: evt.deltaY });
+            Bus.emit('input', { name: 'wheel', data: evt.deltaY });
         };
 
         window.addEventListener('mousemove', onMouseMove);

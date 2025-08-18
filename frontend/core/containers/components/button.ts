@@ -59,7 +59,7 @@ export class Button extends PIXI.Container {
         this.setInteractions();
     }
 
-    setInteractions() {
+    private setInteractions() {
         const onHover = async () => {
             if (this.config.onHover) this.config.onHover();
 
@@ -88,6 +88,7 @@ export class Button extends PIXI.Container {
             if (this.config.onClick) {
                 this.config.onClick();
             }
+            console.log('click');
         };
 
         this.box.eventMode = 'static';
@@ -95,6 +96,7 @@ export class Button extends PIXI.Container {
         this.box.on('pointerleave', onHoverEnd);
         this.box.on('pointercancel', onHoverEnd);
         this.box.on('pointercancelcapture', onHoverEnd);
-        this.box.on('pointertap', onClick);
+        //this.box.on('pointertap', onClick);
+        this.box.on('pointerdown', onClick);
     }
 }

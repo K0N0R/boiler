@@ -3,6 +3,7 @@ import chokidar from 'chokidar';
 import { spawn } from 'child_process';
 import { WebSocket, WebSocketServer } from 'ws';
 import fs from 'node:fs/promises';
+import { generatePreloadConfig } from './generate-preload-config.mjs';
 import { copyFrontendFiles } from './build.snippets.mjs';
 
 const OUT_DIR = 'dist/development';
@@ -133,6 +134,7 @@ function startWatchers() {
 // ---------- Main Setup ----------
 
 async function main() {
+    await generatePreloadConfig();
     await prepareFiles();
     await Promise.all([buildCss(), buildFrontend(), buildBackend()]);
     setupWebSocketServer();

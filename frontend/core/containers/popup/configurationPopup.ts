@@ -10,6 +10,7 @@ import { ProgressBar } from '../components/progressBar';
 import { EffectsManager } from 'frontend/core/systems/effectManager';
 import { ListSelect } from '../components/listSelect';
 import { ListSelectItem } from '../components/listSelectItem';
+import { ScrollArea } from '../components/scrollArea';
 
 export class ConfigurationPopup extends BasePopup {
     box!: Box;
@@ -34,8 +35,8 @@ export class ConfigurationPopup extends BasePopup {
         this.addChild(this.box);
 
         this.closeButton = new Button({
-            x: CoreConfig.width - CoreConfig.width * 0.1,
-            y: CoreConfig.height * 0.1,
+            x: CoreConfig.width - CoreConfig.width * 0.05 - 50,
+            y: CoreConfig.height * 0.05 + 50,
             width: 50,
             height: 50,
             onClick: () => {
@@ -95,30 +96,39 @@ export class ConfigurationPopup extends BasePopup {
     }
 
     // testing
-
+    scrollArea!: ScrollArea;
     advancedContainer!: PIXI.Container;
     slider!: Slider;
     progressBar!: ProgressBar;
     progressBarPercent = 0;
 
     private createAdvancedComponents() {
+        this.scrollArea = new ScrollArea({
+            width: CoreConfig.width * 0.9,
+            height: CoreConfig.height * 0.8,
+            verticalPadding: 50,
+        });
+        this.scrollArea.x = CoreConfig.width * 0.05;
+        this.scrollArea.y = CoreConfig.height * 0.15;
+        this.addChild(this.scrollArea);
+
         this.advancedContainer = new PIXI.Container();
-        this.addChild(this.advancedContainer);
+        this.scrollArea.contentContainer.addChild(this.advancedContainer);
 
         const messageBox = new MessageBox({ text: 'Lorem Ipsum les ma nore, a ja nos tre.' });
-        messageBox.x = CoreConfig.centerX;
+        messageBox.x = CoreConfig.centerX - CoreConfig.width * 0.1;
         messageBox.y = CoreConfig.centerY - 200;
         this.advancedContainer.addChild(messageBox);
 
         const slider = new Slider({ sliderWidth: 50 }, 0.5, () => {});
-        slider.x = CoreConfig.centerX;
+        slider.x = CoreConfig.centerX - CoreConfig.width * 0.1;
         slider.y = CoreConfig.centerY;
         this.advancedContainer.addChild(slider);
         this.slider = slider;
 
         const progressBar = new ProgressBar({ outlineWidth: 10 });
-        progressBar.x = CoreConfig.centerX;
-        progressBar.y = CoreConfig.centerY + 100;
+        progressBar.x = CoreConfig.centerX - CoreConfig.width * 0.1;
+        progressBar.y = CoreConfig.centerY + 500;
         this.advancedContainer.addChild(progressBar);
         this.progressBar = progressBar;
     }
@@ -126,5 +136,6 @@ export class ConfigurationPopup extends BasePopup {
     update(deltaMS: number) {
         this.slider.update(deltaMS);
         this.progressBar.update(deltaMS);
+        this.scrollArea.update(deltaMS);
     }
 }
