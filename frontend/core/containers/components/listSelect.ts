@@ -1,5 +1,6 @@
 import * as PIXI from 'pixi.js';
 import { ListSelectItem } from './listSelectItem';
+import { EffectsManager } from '@systems/effectManager';
 
 interface IListSelectParams<TMetadata> {
     x: number;
@@ -10,6 +11,7 @@ interface IListSelectParams<TMetadata> {
     itemsGap: number;
     onSelect: (metadata: TMetadata) => void;
     onClose: () => void;
+    animation: boolean;
     removeOnCloseAndSelect: boolean;
 }
 
@@ -29,6 +31,7 @@ export class ListSelect<TMetadata> extends PIXI.Container {
             onSelect: (metadata: TMetadata) => {},
             onClose: () => {},
             removeOnCloseAndSelect: true,
+            animation: true,
             ...config,
         };
         this.x = this.config.x;
@@ -37,6 +40,7 @@ export class ListSelect<TMetadata> extends PIXI.Container {
         this.createBackDrop();
         this.createList();
 
+        this.alpha = 0;
         this.visible = true;
     }
 
@@ -49,11 +53,9 @@ export class ListSelect<TMetadata> extends PIXI.Container {
         this.backDrop.anchor.set(0.5);
 
         this.backDrop.eventMode = 'static';
-        this.backDrop.on('pointertap', () => {
+        this.backDrop.on('pointertap', async () => {
+            await this.onHide();
             this.config.onClose();
-            if (this.config.removeOnCloseAndSelect) {
-                this.parent.removeChild(this);
-            }
         });
         this.addChild(this.backDrop);
     }
@@ -62,12 +64,9 @@ export class ListSelect<TMetadata> extends PIXI.Container {
         if (this.config.items.length) {
             this.config.items.forEach((item, index) => {
                 item.eventMode = 'static';
-                item.on('pointertap', () => {
+                item.on('pointertap', async () => {
+                    await this.onHide();
                     this.config.onSelect(item.metadata);
-
-                    if (this.config.removeOnCloseAndSelect) {
-                        this.parent.removeChild(this);
-                    }
                 });
                 item.x = 0;
                 item.y = (item.visuals.height + this.config.itemsGap) * index;
@@ -81,5 +80,35 @@ export class ListSelect<TMetadata> extends PIXI.Container {
         this.config.items.forEach((item) => {
             item.update(deltaMS);
         });
+    }
+
+    private async onHide() {
+        await this.hide();
+        if (this.config.removeOnCloseAndSelect) {
+            this.parent.removeChild(this);
+        }
+    }
+
+    async show() {
+        if (this.config.animation) {
+            this.alpha = 0;
+            await EffectsManager.alpha(this, {
+                alpha: 1,
+                durationMS: 200,
+            });
+        } else {
+            this.alpha = 1;
+        }
+    }
+
+    async hide() {
+        if (this.config.animation) {
+            await EffectsManager.alpha(this, {
+                alpha: 0,
+                durationMS: 200,
+            });
+        } else {
+            this.alpha = 0;
+        }
     }
 }

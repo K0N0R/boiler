@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js';
 import { Box } from './box';
-import { IPosition } from '@common/*';
+import { IPosition } from '@common';
 import { CoreConfig } from '@config/coreConfig';
 import { Bus } from '@systems/bus';
 

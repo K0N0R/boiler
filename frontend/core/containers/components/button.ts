@@ -1,5 +1,5 @@
 import * as PIXI from 'pixi.js';
-import { PixiUtils, TExtendedDisplayObject } from '@common/*';
+import { PixiUtils, TExtendedDisplayObject } from '@common';
 import { EffectsManager, TEffectConfigGroup } from '@systems/effectManager';
 import { CoreConfig } from '@config/coreConfig';
 

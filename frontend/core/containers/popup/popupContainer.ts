@@ -4,7 +4,7 @@ import { ConfigurationPopup } from './configurationPopup';
 import { BasePopup } from './basePopup';
 import { WelcomePopup } from './welcomePopup';
 import { LoaderPopup } from './loaderPopup';
-import { IPromise, JsUtils } from '@common/*';
+import { IPromise, JsUtils } from '@common';
 import { Bus, TBusMessage } from '@systems/bus';
 
 export type TPopupNames = 'welcome' | 'configuration';

@@ -2,7 +2,7 @@ import * as PIXI_SOUND from '@pixi/sound';
 import * as PIXI from 'pixi.js';
 import { EffectsManager } from './effectManager';
 import { GameSettings } from './gameSettings';
-import { JsUtils } from '@common/*';
+import { JsUtils } from '@common';
 
 export type TPlaySoundConfig = {
     soundName: string;

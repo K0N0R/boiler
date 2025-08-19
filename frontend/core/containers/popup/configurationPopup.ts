@@ -82,6 +82,7 @@ export class ConfigurationPopup extends BasePopup {
                 },
             });
             this.addChild(selectList);
+            selectList.show();
 
             await EffectsManager.scale(this.title, {
                 x: 1.1,

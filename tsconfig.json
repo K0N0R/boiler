@@ -15,7 +15,7 @@
             "@world/*": ["frontend/core/containers/world/*"],
             "@entities/*": ["frontend/core/containers/entities/*"],
             "@systems/*": ["frontend/core/systems/*"],
-            "@common/*": ["frontend/common"],
+            "@common": ["frontend/common/index.ts"],
         }
     },
     "include": ["backend", "frontend"]

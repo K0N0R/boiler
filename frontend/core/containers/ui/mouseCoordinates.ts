@@ -1,5 +1,5 @@
 import * as PIXI from 'pixi.js';
-import { IPosition } from '@common/*';
+import { IPosition } from '@common';
 import { Typography } from '@components/typography';
 import { Bus } from '@systems/bus';
 
