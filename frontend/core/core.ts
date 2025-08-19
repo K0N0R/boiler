@@ -39,8 +39,8 @@ export class Core {
 
     async init() {
         await this.instantiateApp();
-        this.instantiateInitialComponents();
         this.watchContainersForResize();
+        this.instantiateInitialComponents();
         this.app.ticker.add(this.update.bind(this));
         this.bindEvents();
     }
@@ -60,13 +60,15 @@ export class Core {
     private instantiateInitialComponents() {
         this.app.stage.addChild(PopupContainer.instance);
         this.scalableContainers.push(PopupContainer.instance);
+        this.triggerResize();
     }
 
     public instantiateComponents() {
         this.uiContainer = new UiContainer();
         this.worldContainer = new WorldContainer();
         this.app.stage.addChild(this.worldContainer, this.uiContainer);
-        this.scalableContainers.push(this.uiContainer);
+        this.scalableContainers.push(this.uiContainer, this.worldContainer);
+        this.triggerResize();
     }
 
     private watchContainersForResize() {
@@ -76,6 +78,9 @@ export class Core {
                 this.calculateObjectRatio(scalable, width, height);
             });
         });
+    }
+
+    private triggerResize() {
         this.app.renderer.resize(window.innerWidth, window.innerHeight);
     }
 
