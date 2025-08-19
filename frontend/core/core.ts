@@ -7,11 +7,13 @@ import { UiContainer } from '@ui/uiContainer';
 import { UiTime, WorldTime } from '@systems/time';
 import { EffectsManager } from '@systems/effectManager';
 import { Bus } from '@systems/bus';
+import { Background } from '@entities/background';
 
 export class Core {
     app!: PIXI.Application;
 
     timeScale = 1;
+    background!: Background;
     worldContainer!: WorldContainer;
 
     uiContainer!: UiContainer;
@@ -26,6 +28,7 @@ export class Core {
         EffectsManager.updateUi(ticker.deltaMS);
         this.uiContainer?.update(ticker.deltaMS);
         this.popupContainer.update(ticker.deltaMS);
+        this.background.update(ticker.deltaMS);
 
         if (GameState.state === 'initialization') {
         } else {
@@ -58,8 +61,9 @@ export class Core {
     }
 
     private instantiateInitialComponents() {
-        this.app.stage.addChild(PopupContainer.instance);
-        this.scalableContainers.push(PopupContainer.instance);
+        this.background = new Background();
+        this.app.stage.addChild(this.background, PopupContainer.instance);
+        this.scalableContainers.push(this.background, PopupContainer.instance);
         this.triggerResize();
     }
 
