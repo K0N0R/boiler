@@ -4,7 +4,7 @@ import { spawn } from 'child_process';
 import { WebSocket, WebSocketServer } from 'ws';
 import fs from 'node:fs/promises';
 import { generatePreloadConfig } from './generate-preload-config.mjs';
-import { copyFrontendFiles } from './build.snippets.mjs';
+import { copyFrontendFiles, copyAssets } from './build.snippets.mjs';
 
 const OUT_DIR = 'dist/development';
 const liveReloadPort = 3456;
@@ -121,6 +121,22 @@ function startWatchers() {
         await buildCss();
         notifyClients();
     });
+
+    const assetsWatcher = chokidar.watch('frontend/assets', {
+        ignored: /[\\/]\~.*\.tmp$/, // ignoruj pliki tymczasowe
+        ignoreInitial: true,
+    });
+
+    const handleAssetsChange = async () => {
+        console.log('🎨 Assets changed');
+        await generatePreloadConfig();
+        await copyAssets(OUT_DIR);
+        notifyClients();
+    };
+
+    assetsWatcher.on('change', handleAssetsChange);
+    assetsWatcher.on('add', handleAssetsChange);
+    assetsWatcher.on('unlink', handleAssetsChange);
 
     chokidar.watch('backend').on('change', async () => {
         console.log('🔁 Backend changed');

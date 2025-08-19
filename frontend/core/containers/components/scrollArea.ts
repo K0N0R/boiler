@@ -96,7 +96,6 @@ export class ScrollArea extends PIXI.Container {
         this.on('pointermove', (e) => {
             if (this.isScrolling) {
                 this.scrollingDelta = this.scrollableAreaScrollStartY - e.global.y;
-                console.log('scrollingDelta', this.scrollingDelta);
             }
         });
 

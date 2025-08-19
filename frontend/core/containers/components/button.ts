@@ -88,7 +88,6 @@ export class Button extends PIXI.Container {
             if (this.config.onClick) {
                 this.config.onClick();
             }
-            console.log('click');
         };
 
         this.box.eventMode = 'static';
