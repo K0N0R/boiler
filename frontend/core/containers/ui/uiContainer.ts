@@ -8,7 +8,7 @@ export class UiContainer extends PIXI.Container {
     constructor() {
         super();
 
-        this.mouseCoordinates = new MouseCoordinates(); // for debug purpouses
+        this.mouseCoordinates = new MouseCoordinates(); // for debug purposes
 
         this.addChild(this.mouseCoordinates);
         this.bindEvents();
