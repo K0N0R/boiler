@@ -1,14 +1,14 @@
 import * as PIXI from 'pixi.js';
+import { SoundManager } from '@systems/soundManager';
+import { GameSettings } from '@systems/gameSettings';
+import { InputHandler } from '@systems/inputHandler';
+import { MusicManager } from '@systems/musicManager';
+import { PopupContainer } from '@popup/popupContainer';
+import { GameState } from '@systems/gameState';
+
 import { Core } from './core/core';
 import { preload } from './core/preload';
-
-import { InputHandler } from './core/systems/inputHandler';
-import { MusicManager } from './core/systems/musicManager';
-import { SoundManager } from './core/systems/soundManager';
 import { prepreload } from './core/prepreload';
-import { GameSettings } from './core/systems/gameSettings';
-import { GameState } from './core/systems/gameState';
-import { PopupContainer } from './core/containers/popup/popupContainer';
 
 const init = async () => {
     const core = new Core();

@@ -1,8 +1,9 @@
 import * as PIXI from 'pixi.js';
-import { Typography } from '../components/typography';
-import { EffectsManager } from '../../systems/effectManager';
-import { CoreConfig } from '../../config/coreConfig';
+
 import { BasePopup } from './basePopup';
+import { CoreConfig } from '@config/coreConfig';
+import { Typography } from '@components/typography';
+import { EffectsManager } from '@systems/effectManager';
 
 export class WelcomePopup extends BasePopup {
     plane!: PIXI.Sprite;

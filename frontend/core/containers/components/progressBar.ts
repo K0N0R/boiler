@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js';
 import { Box } from './box';
-import { CoreConfig } from 'frontend/core/config/coreConfig';
+import { CoreConfig } from '@config/coreConfig';
 
 interface IProgressBarParams {
     width: number;

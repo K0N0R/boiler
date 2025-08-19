@@ -1,7 +1,5 @@
 import * as PIXI from 'pixi.js';
 
-type TTypographyTextSize = 'tiny' | 'small' | 'normal' | 'big' | 'huge';
-
 type TTypographyHorizontalAlign = 'left' | 'center' | 'right';
 type TTypographyVerticalAlign = 'top' | 'center' | 'bottom';
 type TTypographyFontWeight = 'bold' | 'normal';

@@ -1,8 +1,8 @@
 import * as PIXI from 'pixi.js';
 import { Box } from './box';
-import { IPosition } from 'frontend/common';
-import { Bus } from '../../systems/bus';
-import { CoreConfig } from 'frontend/core/config/coreConfig';
+import { IPosition } from '@common/*';
+import { CoreConfig } from '@config/coreConfig';
+import { Bus } from '@systems/bus';
 
 interface ISliderParams {
     width: number;

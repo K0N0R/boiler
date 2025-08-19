@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js';
 import { Box } from './box';
 import { Typography } from './typography';
-import { CoreConfig } from 'frontend/core/config/coreConfig';
+import { CoreConfig } from '@config/coreConfig';
 
 interface IMessageBoxParams {
     textSize: number;

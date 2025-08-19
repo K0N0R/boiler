@@ -1,16 +1,17 @@
 import * as PIXI from 'pixi.js';
-import { Typography } from '../components/typography';
-import { Box } from '../components/box';
-import { Button } from '../components/button';
-import { CoreConfig } from 'frontend/core/config/coreConfig';
+
 import { BasePopup } from './basePopup';
-import { MessageBox } from '../components/messageBox';
-import { Slider } from '../components/slider';
-import { ProgressBar } from '../components/progressBar';
-import { EffectsManager } from 'frontend/core/systems/effectManager';
-import { ListSelect } from '../components/listSelect';
-import { ListSelectItem } from '../components/listSelectItem';
-import { ScrollArea } from '../components/scrollArea';
+import { CoreConfig } from '@config/coreConfig';
+import { Button } from '@components/button';
+import { Typography } from '@components/typography';
+import { ListSelect } from '@components/listSelect';
+import { ListSelectItem } from '@components/listSelectItem';
+import { EffectsManager } from '@systems/effectManager';
+import { ScrollArea } from '@components/scrollArea';
+import { Slider } from '@components/slider';
+import { ProgressBar } from '@components/progressBar';
+import { MessageBox } from '@components/messageBox';
+import { Box } from '@components/box';
 
 export class ConfigurationPopup extends BasePopup {
     box!: Box;

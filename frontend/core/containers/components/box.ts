@@ -1,5 +1,5 @@
-import { CoreConfig } from 'frontend/core/config/coreConfig';
 import * as PIXI from 'pixi.js';
+import { CoreConfig } from '@config/coreConfig';
 
 export type TBoxAnchor = 'leftTop' | 'mid';
 export interface IBoxParams {

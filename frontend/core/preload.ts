@@ -1,7 +1,6 @@
 import * as PIXI from 'pixi.js';
-
-import { GameSettings } from './systems/gameSettings';
-import { Bus } from './systems/bus';
+import { Bus } from '@systems/bus';
+import { GameSettings } from '@systems/gameSettings';
 
 const preloadConfig = require('../preload-config.json');
 

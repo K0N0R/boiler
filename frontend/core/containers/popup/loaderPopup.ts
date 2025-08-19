@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js';
-import { ProgressBar } from '../components/progressBar';
-import { Bus } from '../../systems/bus';
-import { CoreConfig } from '../../config/coreConfig';
+import { ProgressBar } from '@components/progressBar';
+import { CoreConfig } from '@config/coreConfig';
+import { Bus } from '@systems/bus';
 
 export class LoaderPopup extends PIXI.Container {
     progressBar!: ProgressBar;

@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js';
-import { Bus } from '../../systems/bus';
 import { MouseCoordinates } from './mouseCoordinates';
+import { Bus } from '@systems/bus';
 
 export class UiContainer extends PIXI.Container {
     mouseCoordinates: MouseCoordinates;

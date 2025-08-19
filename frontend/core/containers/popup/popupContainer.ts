@@ -1,11 +1,11 @@
 import * as PIXI from 'pixi.js';
 
 import { ConfigurationPopup } from './configurationPopup';
-import { IPromise, JsUtils } from 'frontend/common';
 import { BasePopup } from './basePopup';
-import { Bus, TBusMessage } from '../../systems/bus';
 import { WelcomePopup } from './welcomePopup';
 import { LoaderPopup } from './loaderPopup';
+import { IPromise, JsUtils } from '@common/*';
+import { Bus, TBusMessage } from '@systems/bus';
 
 export type TPopupNames = 'welcome' | 'configuration';
 

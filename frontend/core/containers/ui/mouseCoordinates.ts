@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js';
-import { Typography } from '../components/typography';
-import { IPosition } from 'frontend/common';
-import { Bus } from '../../systems/bus';
+import { IPosition } from '@common/*';
+import { Typography } from '@components/typography';
+import { Bus } from '@systems/bus';
 
 export class MouseCoordinates extends PIXI.Container {
     text!: Typography;

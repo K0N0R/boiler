@@ -1,4 +1,4 @@
-import { IPosition } from 'frontend/common';
+import { IPosition } from '@common/*';
 
 export type TStateMessage = [{ name: 'gameplay-start' }, { name: 'lobby-start' }];
 export type TSystemMessage = [

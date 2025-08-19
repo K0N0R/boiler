@@ -1,14 +1,12 @@
 import * as PIXI from 'pixi.js';
-
-import { UiContainer } from './containers/ui/uiContainer';
-
-import { Bus } from './systems/bus';
-import { UiTime, WorldTime } from './systems/time';
-import { EffectsManager } from './systems/effectManager';
-import { CoreConfig } from './config/coreConfig';
-import { WorldContainer } from './containers/world/worldContainer';
-import { GameState } from './systems/gameState';
-import { PopupContainer } from './containers/popup/popupContainer';
+import { WorldContainer } from '@world/worldContainer';
+import { PopupContainer } from '@popup/popupContainer';
+import { GameState } from '@systems/gameState';
+import { CoreConfig } from '@config/coreConfig';
+import { UiContainer } from '@ui/uiContainer';
+import { UiTime, WorldTime } from '@systems/time';
+import { EffectsManager } from '@systems/effectManager';
+import { Bus } from '@systems/bus';
 
 export class Core {
     app!: PIXI.Application;

@@ -1,5 +1,5 @@
 import * as PIXI from 'pixi.js';
-import { IPromise, JsUtils } from 'frontend/common';
+import { IPromise } from '@common/*';
 
 export class BasePopup extends PIXI.Container {
     promise!: IPromise;

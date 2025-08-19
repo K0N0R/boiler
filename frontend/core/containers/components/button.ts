@@ -1,7 +1,8 @@
 import * as PIXI from 'pixi.js';
-import { EffectsManager, TEffectConfigGroup } from '../../systems/effectManager';
-import { PixiUtils, TExtendedDisplayObject } from 'frontend/common';
-import { CoreConfig } from '../../config/coreConfig';
+import { PixiUtils, TExtendedDisplayObject } from '@common/*';
+import { EffectsManager, TEffectConfigGroup } from '@systems/effectManager';
+import { CoreConfig } from '@config/coreConfig';
+
 import { Box, IBoxParams } from './box';
 
 export interface IButtonParams extends IBoxParams {

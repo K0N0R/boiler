@@ -1,8 +1,8 @@
 import * as PIXI from 'pixi.js';
 import { Button } from './button';
 import { ArrowDownIcon, ArrowUpIcon } from './arrowIcon';
-import { Bus } from '../../systems/bus';
-import { EffectsManager } from 'frontend/core/systems/effectManager';
+import { EffectsManager } from '@systems/effectManager';
+import { Bus } from '@systems/bus';
 
 export interface IScrollAreaParams {
     width: number;
