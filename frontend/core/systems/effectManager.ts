@@ -282,7 +282,7 @@ export class EffectsManagerBase {
         );
     }
 
-    async tint(obj: PIXI.Sprite, config: { tint: number } & TBaseEffectConfig) {
+    async tint(obj: PIXI.Container, config: { tint: number } & TBaseEffectConfig) {
         const getTint = () => {
             return obj.tint;
         };
