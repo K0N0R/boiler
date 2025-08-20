@@ -1,5 +1,5 @@
 import * as PIXI from 'pixi.js';
-import { IPosition } from '../common';
+import { IPosition, MathUtils } from '../common';
 
 export type TExtendedDisplayObject =
     | PIXI.Container
@@ -104,5 +104,25 @@ export namespace PixiUtils {
             graphics.fill();
         }
         return graphics;
+    }
+
+    export function getClosestToElementFromCollection<
+        T extends PIXI.Container,
+        U extends PIXI.Container,
+    >(element: T, collection: U[]): U | undefined {
+        return collection
+            .concat()
+            .sort(
+                (a, b) =>
+                    MathUtils.distance(
+                        element.toGlobal({ x: 0, y: 0 }),
+                        b.toGlobal({ x: 0, y: 0 }),
+                    ) -
+                    MathUtils.distance(
+                        element.toGlobal({ x: 0, y: 0 }),
+                        a.toGlobal({ x: 0, y: 0 }),
+                    ),
+            )
+            .pop();
     }
 }
