@@ -18,10 +18,7 @@ async function buildCss() {
         bundle: true,
         minify: true,
         outfile: `${OUT_DIR}/public/index.css`,
-        loader: {
-            '.css': 'css',
-            '.ttf': 'file',
-        },
+        loader: { '.css': 'css', '.png': 'file', '.ttf': 'file' },
         assetNames: 'fonts/[name]',
     });
 }
