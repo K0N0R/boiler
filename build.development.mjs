@@ -88,6 +88,7 @@ async function buildFrontend() {
             outfile: `${OUT_DIR}/public/index.js`,
             sourcemap: true,
             format: 'esm',
+            define: { DEBUG: 'false' },
             plugins: [liveReloadPlugin],
             define: { DEBUG: 'true' },
         });
