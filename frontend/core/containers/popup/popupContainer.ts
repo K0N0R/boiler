@@ -63,6 +63,9 @@ export class PopupContainer extends PIXI.Container {
     }
 
     update(deltaMS: number) {
+        if (this.loader.visible) {
+            this.loader.update(deltaMS);
+        }
         if (!this.popups) return;
         Object.values(this.popups)
             .filter((popup) => popup.visible)
