@@ -8,15 +8,18 @@ import { ListSelect } from '@components/listSelect';
 import { ListSelectItem } from '@components/listSelectItem';
 import { EffectsManager } from '@systems/effectManager';
 import { ScrollArea } from '@components/scrollArea';
-import { Slider } from '@components/slider';
-import { ProgressBar } from '@components/progressBar';
-import { MessageBox } from '@components/messageBox';
 import { Box } from '@components/box';
+import { GameSettings } from '@systems/gameSettings';
+import { SoundSliderOption } from '@components/soundSliderOption';
 
 export class ConfigurationPopup extends BasePopup {
     box!: Box;
     title!: Typography;
     closeButton!: Button;
+    musicSlider!: SoundSliderOption;
+    soundSlider!: SoundSliderOption;
+    scrollArea!: ScrollArea;
+    advancedContainer!: PIXI.Container;
 
     constructor() {
         super();
@@ -32,18 +35,18 @@ export class ConfigurationPopup extends BasePopup {
             height: CoreConfig.height - CoreConfig.height * 0.1,
             alpha: 0.95,
             anchor: 'mid',
+            tint: 0x000000,
         });
         this.addChild(this.box);
 
         this.closeButton = new Button({
-            x: CoreConfig.width - CoreConfig.width * 0.05 - 50,
-            y: CoreConfig.height * 0.05 + 50,
+            x: CoreConfig.width - CoreConfig.height * 0.05,
+            y: CoreConfig.height * 0.05,
             width: 50,
             height: 50,
+            tint: 0xd3d3d3,
             onClick: () => {
-                this.progressBarPercent += 0.1;
-                this.progressBar.updatePercentage(this.progressBarPercent);
-                //this.promise.resolve();
+                this.promise.resolve();
             },
             roundness: 100,
             alpha: 1,
@@ -52,7 +55,7 @@ export class ConfigurationPopup extends BasePopup {
 
         this.addChild(this.closeButton);
 
-        this.title = new Typography({ text: 'Configuration', color: 0x000000, size: 36 });
+        this.title = new Typography({ text: 'Opcje', color: 0xffffff, size: 28 });
         this.title.x = CoreConfig.width / 2;
         this.title.y = CoreConfig.height * 0.1;
         this.addChild(this.title);
@@ -82,7 +85,6 @@ export class ConfigurationPopup extends BasePopup {
                 },
             });
             this.addChild(selectList);
-            selectList.show();
 
             await EffectsManager.scale(this.title, {
                 x: 1.1,
@@ -97,13 +99,6 @@ export class ConfigurationPopup extends BasePopup {
         });
     }
 
-    // testing
-    scrollArea!: ScrollArea;
-    advancedContainer!: PIXI.Container;
-    slider!: Slider;
-    progressBar!: ProgressBar;
-    progressBarPercent = 0;
-
     private createAdvancedComponents() {
         this.scrollArea = new ScrollArea({
             width: CoreConfig.width * 0.9,
@@ -117,27 +112,47 @@ export class ConfigurationPopup extends BasePopup {
         this.advancedContainer = new PIXI.Container();
         this.scrollArea.contentContainer.addChild(this.advancedContainer);
 
-        const messageBox = new MessageBox({ text: 'Lorem Ipsum les ma nore, a ja nos tre.' });
-        messageBox.x = CoreConfig.centerX - CoreConfig.width * 0.1;
-        messageBox.y = CoreConfig.centerY - 200;
-        this.advancedContainer.addChild(messageBox);
+        this.musicSlider = new SoundSliderOption(
+            'Muzyka',
+            () => {
+                GameSettings.musicEnabled = !GameSettings.musicEnabled;
+            },
+            (percentage) => {
+                return (GameSettings.musicVolume = percentage);
+            },
+            () => {
+                return GameSettings.musicEnabled;
+            },
+            () => {
+                return GameSettings.musicEnabled ? GameSettings.musicVolume : 0;
+            },
+        );
+        this.advancedContainer.addChild(this.musicSlider);
+        this.musicSlider.y = 50;
 
-        const slider = new Slider({ sliderWidth: 50 }, 0.5, () => {});
-        slider.x = CoreConfig.centerX - CoreConfig.width * 0.1;
-        slider.y = CoreConfig.centerY;
-        this.advancedContainer.addChild(slider);
-        this.slider = slider;
+        this.soundSlider = new SoundSliderOption(
+            'Efekty dźwiękowe',
+            () => {
+                GameSettings.effectsEnabled = !GameSettings.effectsEnabled;
+            },
+            (percentage) => {
+                return (GameSettings.effectsVolume = percentage);
+            },
+            () => {
+                return GameSettings.effectsEnabled;
+            },
+            () => {
+                return GameSettings.effectsEnabled ? GameSettings.effectsVolume : 0;
+            },
+        );
+        this.advancedContainer.addChild(this.soundSlider);
+        this.soundSlider.y = 110;
 
-        const progressBar = new ProgressBar({ outlineWidth: 10 });
-        progressBar.x = CoreConfig.centerX - CoreConfig.width * 0.1;
-        progressBar.y = CoreConfig.centerY + 500;
-        this.advancedContainer.addChild(progressBar);
-        this.progressBar = progressBar;
+        this.advancedContainer.x = 75;
     }
 
     update(deltaMS: number) {
-        this.slider.update(deltaMS);
-        this.progressBar.update(deltaMS);
-        this.scrollArea.update(deltaMS);
+        this.musicSlider.update(deltaMS);
+        this.soundSlider.update(deltaMS);
     }
 }
