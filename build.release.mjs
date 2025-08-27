@@ -29,6 +29,7 @@ async function buildFrontend() {
         entryPoints: ['frontend/index.ts'],
         bundle: true,
         minify: true,
+        define: { DEBUG: 'false' },
         outfile: `${OUT_DIR}/public/index.js`,
         format: 'esm',
     });
