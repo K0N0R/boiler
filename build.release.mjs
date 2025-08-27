@@ -18,10 +18,7 @@ async function buildCss() {
         bundle: true,
         minify: true,
         outfile: `${OUT_DIR}/public/index.css`,
-        loader: {
-            '.css': 'css',
-            '.ttf': 'file',
-        },
+        loader: { '.css': 'css', '.png': 'file', '.ttf': 'file' },
         assetNames: 'fonts/[name]',
     });
 }
@@ -32,6 +29,7 @@ async function buildFrontend() {
         entryPoints: ['frontend/index.ts'],
         bundle: true,
         minify: true,
+        define: { DEBUG: 'false' },
         outfile: `${OUT_DIR}/public/index.js`,
         format: 'esm',
     });
