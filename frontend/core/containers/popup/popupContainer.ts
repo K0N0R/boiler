@@ -10,7 +10,10 @@ import { Bus, TBusMessage } from '@systems/bus';
 export type TPopupNames = 'welcome' | 'configuration';
 
 export class PopupContainer extends PIXI.Container {
-    static instance = new PopupContainer();
+    static instance: PopupContainer;
+    static createInstance() {
+        this.instance = new PopupContainer();
+    }
 
     loader: LoaderPopup;
     popups!: Record<TPopupNames, BasePopup>;

@@ -17,7 +17,7 @@ export class Core {
     worldContainer!: WorldContainer;
 
     uiContainer!: UiContainer;
-    popupContainer = PopupContainer.instance;
+    popupContainer!: PopupContainer;
     scalableContainers: PIXI.Container[] = [];
 
     update(ticker: PIXI.Ticker) {
@@ -62,6 +62,8 @@ export class Core {
 
     private instantiateInitialComponents() {
         this.background = new Background();
+        PopupContainer.createInstance();
+        this.popupContainer = PopupContainer.instance;
         this.app.stage.addChild(this.background, PopupContainer.instance);
         this.scalableContainers.push(this.background, PopupContainer.instance);
         this.triggerResize();
