@@ -5,7 +5,7 @@ import { CoreConfig } from '@config/coreConfig';
 import { Typography } from '@components/typography';
 import { EffectsManager } from '@systems/effectManager';
 
-export class WelcomePopup extends BasePopup {
+export class WelcomePopup extends BasePopup<undefined> {
     plane!: PIXI.Sprite;
     text!: Typography;
 
