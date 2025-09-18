@@ -4,15 +4,12 @@ import { BasePopup } from './basePopup';
 import { CoreConfig } from '@config/coreConfig';
 import { Button } from '@components/button';
 import { Typography } from '@components/typography';
-import { ListSelect } from '@components/listSelect';
-import { ListSelectItem } from '@components/listSelectItem';
-import { EffectsManager } from '@systems/effectManager';
 import { ScrollArea } from '@components/scrollArea';
 import { Box } from '@components/box';
 import { GameSettings } from '@systems/gameSettings';
 import { SoundSliderOption } from '@components/soundSliderOption';
 
-export class ConfigurationPopup extends BasePopup {
+export class ConfigurationPopup extends BasePopup<never> {
     box!: Box;
     title!: Typography;
     closeButton!: Button;
@@ -31,11 +28,12 @@ export class ConfigurationPopup extends BasePopup {
         this.box = new Box({
             x: CoreConfig.centerX,
             y: CoreConfig.centerY,
-            width: CoreConfig.width - CoreConfig.width * 0.1,
-            height: CoreConfig.height - CoreConfig.height * 0.1,
-            alpha: 0.95,
+            width: CoreConfig.width,
+            height: CoreConfig.height,
+            roundness: 0,
+            alpha: 0.99,
             anchor: 'mid',
-            tint: 0x000000,
+            tint: 0x002b2c,
         });
         this.addChild(this.box);
 
@@ -57,56 +55,18 @@ export class ConfigurationPopup extends BasePopup {
 
         this.title = new Typography({ text: 'Opcje', color: 0xffffff, size: 28 });
         this.title.x = CoreConfig.width / 2;
-        this.title.y = CoreConfig.height * 0.1;
+        this.title.y = 50;
         this.addChild(this.title);
-
-        this.title.eventMode = 'dynamic';
-
-        this.title.on('click', async () => {
-            const selectList = new ListSelect({
-                x: this.title.x,
-                y: this.title.y,
-                items: [
-                    new ListSelectItem(
-                        new Button({ width: 100, children: [new Typography({ text: 'first' })] }),
-                        'first',
-                    ),
-                    new ListSelectItem(
-                        new Button({ width: 100, children: [new Typography({ text: 'second' })] }),
-                        'second',
-                    ),
-                    new ListSelectItem(
-                        new Button({ width: 100, children: [new Typography({ text: 'third' })] }),
-                        'third',
-                    ),
-                ],
-                onSelect: (metadata) => {
-                    console.log(metadata);
-                },
-            });
-            this.addChild(selectList);
-
-            await EffectsManager.scale(this.title, {
-                x: 1.1,
-                y: 1.1,
-                durationMS: 1000,
-            });
-            await EffectsManager.scale(this.title, {
-                x: 1,
-                y: 1,
-                durationMS: 1000,
-            });
-        });
     }
 
     private createAdvancedComponents() {
         this.scrollArea = new ScrollArea({
             width: CoreConfig.width * 0.9,
-            height: CoreConfig.height * 0.8,
+            height: CoreConfig.height * 0.785,
             verticalPadding: 50,
         });
         this.scrollArea.x = CoreConfig.width * 0.05;
-        this.scrollArea.y = CoreConfig.height * 0.15;
+        this.scrollArea.y = CoreConfig.height * 0.2;
         this.addChild(this.scrollArea);
 
         this.advancedContainer = new PIXI.Container();
@@ -153,7 +113,6 @@ export class ConfigurationPopup extends BasePopup {
 
     update(deltaMS: number) {
         this.scrollArea.update(deltaMS);
-
         this.musicSlider.update(deltaMS);
         this.soundSlider.update(deltaMS);
     }

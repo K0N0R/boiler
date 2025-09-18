@@ -1,10 +1,10 @@
 import * as PIXI from 'pixi.js';
 import { IPromise } from '@common';
 
-export class BasePopup extends PIXI.Container {
+export class BasePopup<TData> extends PIXI.Container {
     promise!: IPromise;
 
-    show() {}
+    show(data: TData) {}
 
     createBaseComponents() {}
 

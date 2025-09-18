@@ -8,16 +8,23 @@ import { IPromise, JsUtils } from '@common';
 import { Bus, TBusMessage } from '@systems/bus';
 
 export type TPopupNames = 'welcome' | 'configuration';
+interface TPopupData {
+    welcome: undefined;
+    configuration: undefined;
+}
 
 export class PopupContainer extends PIXI.Container {
     static instance: PopupContainer;
     static createInstance() {
         this.instance = new PopupContainer();
     }
-
     loader: LoaderPopup;
-    popups!: Record<TPopupNames, BasePopup>;
+    popups!: {
+        [K in TPopupNames]: BasePopup<TPopupData[K]>;
+    };
     popupPromises!: Record<TPopupNames, IPromise | null>;
+
+    static subscribers: ((popupName: TPopupNames, show: boolean) => void)[] = [];
 
     constructor() {
         super();
@@ -51,14 +58,21 @@ export class PopupContainer extends PIXI.Container {
         this.instance.loader.visible = false;
     }
 
-    static async show(popupName: TPopupNames) {
+    static async show<T extends TPopupNames>(
+        popupName: T,
+        ...args: TPopupData[T] extends undefined ? [] : [data: TPopupData[T]]
+    ) {
+        const data = args[0] as TPopupData[T];
+
         this.instance.popupPromises[popupName] = JsUtils.createPromise();
         this.instance.popups[popupName].visible = true;
         this.instance.popups[popupName].promise = this.instance.popupPromises[popupName];
-        this.instance.popups[popupName].show();
+        this.instance.popups[popupName].show(data);
+        this.notifySubscribers(popupName, true);
         await this.instance.popupPromises[popupName].promise;
         this.instance.popups[popupName].visible = false;
         this.instance.popupPromises[popupName] = null;
+        this.notifySubscribers(popupName, false);
     }
 
     static async hide(popupName: TPopupNames) {
@@ -124,5 +138,15 @@ export class PopupContainer extends PIXI.Container {
             default:
                 return false;
         }
+    }
+
+    static subscribe(callback: (popupName: TPopupNames, show: boolean) => void) {
+        this.subscribers.push(callback);
+    }
+
+    static notifySubscribers(popupName: TPopupNames, show: boolean) {
+        this.subscribers.forEach((callback) => {
+            callback(popupName, show);
+        });
     }
 }
