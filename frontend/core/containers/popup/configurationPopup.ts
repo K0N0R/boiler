@@ -152,6 +152,8 @@ export class ConfigurationPopup extends BasePopup {
     }
 
     update(deltaMS: number) {
+        this.scrollArea.update(deltaMS);
+
         this.musicSlider.update(deltaMS);
         this.soundSlider.update(deltaMS);
     }

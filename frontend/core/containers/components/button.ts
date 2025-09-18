@@ -29,6 +29,8 @@ export class Button extends PIXI.Container {
             width: 50,
             height: 50,
             tint: CoreConfig.primaryColor,
+            outlineWidth: 0,
+            outlineTint: 0xffffff,
             alpha: 1,
             roundness: CoreConfig.roundness,
             onClick: () => {},
@@ -52,6 +54,9 @@ export class Button extends PIXI.Container {
 
         if (Array.isArray(config.children) && config.children.length > 0) {
             this.addChild(...config.children.map(PixiUtils.applyExtendedDisplayObjectParams));
+            config.children.forEach((child) => {
+                child.eventMode = 'none';
+            });
         }
 
         this.x = this.config.x;

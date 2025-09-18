@@ -146,5 +146,9 @@ export class ScrollArea extends PIXI.Container {
 
     update(deltaMS: number) {
         this.scroll();
+
+        const isScrollable = this.contentContainer.height > this.config.height;
+        this.scrollTop.visible = isScrollable;
+        this.scrollBot.visible = isScrollable;
     }
 }

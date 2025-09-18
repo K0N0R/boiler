@@ -3,6 +3,7 @@ import * as PIXI from 'pixi.js';
 export interface IIconParams {
     sprite: string;
     size: number;
+    animated?: boolean;
 }
 
 export class Icon extends PIXI.Container {
@@ -13,6 +14,7 @@ export class Icon extends PIXI.Container {
         this.config = {
             sprite: '',
             size: 40,
+            animated: false,
             ...config,
         };
 

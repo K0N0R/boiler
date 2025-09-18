@@ -11,6 +11,8 @@ export interface IBoxParams {
     tint: number;
     roundness: number;
     anchor: TBoxAnchor;
+    outlineWidth: number;
+    outlineTint: number;
 }
 
 export class Box extends PIXI.Container {
@@ -27,6 +29,8 @@ export class Box extends PIXI.Container {
             tint: 0xffffff,
             roundness: CoreConfig.roundness,
             anchor: 'mid',
+            outlineWidth: 0,
+            outlineTint: 0x000000,
             ...config,
         };
 
@@ -40,6 +44,8 @@ export class Box extends PIXI.Container {
 
         this.box.roundRect(x, y, config.width, config.height, config.roundness);
         this.box.fill({ color: config.tint });
+        this.box.stroke({ width: config.outlineWidth, color: config.outlineTint });
+
         this.box.alpha = config.alpha;
         this.addChild(this.box);
 
