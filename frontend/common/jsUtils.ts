@@ -56,14 +56,14 @@ export namespace JsUtils {
         });
     }
 
-    export function capitilizeFirstLetter(string: string): string {
+    export function capitalizeFirstLetter(string: string): string {
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
 
-    export function iso(posistion: IPosition, negative: boolean = false) {
+    export function iso(position: IPosition, negative: boolean = false) {
         return {
-            x: posistion.x,
-            y: posistion.y + posistion.x * (Math.tan(Math.PI / 6) * (negative ? -1 : 1)),
+            x: position.x,
+            y: position.y + position.x * (Math.tan(Math.PI / 6) * (negative ? -1 : 1)),
         };
     }
 
