@@ -2,33 +2,31 @@
 import { ParticleContainer, Particle, Texture, Ticker } from 'pixi.js';
 
 export interface ParticleEffectConfig {
-    maxParticles?: number; // własny limit systemu
-    emissionRate?: number; // cząsteczki/s w trybie ciągłym
-    lifetime?: [number, number]; // sekundy (min, max)
-    speed?: [number, number]; // px/s (min, max)
-    scale?: [number, number]; // skala początkowa (min, max)
-    alpha?: [number, number]; // [startAlpha, endAlpha]
-    angle?: [number, number]; // zakres emisji w stopniach
-    gravity?: number; // px/s^2 (po osi Y)
-    friction?: number; // 0..1 (np. 0.92 hamuje, 1.0 = bez tarcia)
+    maxParticles?: number;
+    emissionRate?: number;
+    lifetime?: [number, number];
+    speed?: [number, number];
+    scale?: [number, number];
+    alpha?: [number, number];
+    angle?: [number, number];
+    gravity?: number;
+    friction?: number;
+    angularSpeed?: [number, number];
 
-    /** start i end koloru (0xRRGGBB). Jeżeli oba jednakowe – stały tint. */
     tint?: [number, number];
+    wind?: { strength: number; frequency: number };
+    emitArea?: { width: number; height: number };
 
     dynamic?: {
         position?: boolean;
         rotation?: boolean;
-        scale?: boolean; // w Pixi 8 to "vertex" property
-        color?: boolean; // alpha/tint
+        scale?: boolean;
+        color?: boolean;
     };
 }
 
-/**
- * Czysty, lekki system cząsteczek pod PixiJS 8, bez zewn. zależności.
- * Używa ParticleContainer + Particle (API v8) i własnego poolingu.
- */
 export class BaseParticleEffect extends ParticleContainer {
-    private _tex: Texture;
+    private _texArray: Texture[];
 
     private cfg: Required<ParticleEffectConfig>;
     private pool: Particle[] = [];
@@ -44,26 +42,31 @@ export class BaseParticleEffect extends ParticleContainer {
         endScale: number;
         startTint: number;
         endTint: number;
+        angularSpeed: number;
+        windOffset: number;
+        windFrequency: number;
     }[] = [];
 
-    private running = false; // tryb ciągły (start/stop)
-    private onceUpdating = false; // tymczasowy updater dla emitOnce
-    private emitAcc = 0; // akumulator emisji dla trybu ciągłego
+    private running = false;
+    private onceUpdating = false;
+    private emitAcc = 0;
 
-    constructor(config: ParticleEffectConfig, texture: Texture) {
+    constructor(config: ParticleEffectConfig, textures: Texture | Texture[]) {
+        const texturesArray = Array.isArray(textures) ? textures : [textures];
+        const firstTexture = texturesArray[0];
+
         super({
-            texture,
-            // Dobierz dynamicProperties do tego, co animujesz w ticku.
+            texture: firstTexture,
             dynamicProperties: {
                 position: config.dynamic?.position ?? true,
-                rotation: config.dynamic?.rotation ?? false,
-                vertex: config.dynamic?.scale ?? true, // skalujemy scaleX/scaleY
-                color: config.dynamic?.color ?? true, // zmieniamy alpha + tint
-                uvs: false,
+                rotation: config.dynamic?.rotation ?? true,
+                vertex: config.dynamic?.scale ?? true,
+                color: config.dynamic?.color ?? true,
+                uvs: texturesArray.length > 1 ? true : false,
             },
         });
 
-        this._tex = texture;
+        this._texArray = Array.isArray(textures) ? textures : [textures];
         this.cfg = {
             maxParticles: config.maxParticles ?? 500,
             emissionRate: config.emissionRate ?? 80,
@@ -73,34 +76,31 @@ export class BaseParticleEffect extends ParticleContainer {
             alpha: config.alpha ?? [1, 0],
             angle: config.angle ?? [0, 360],
             gravity: config.gravity ?? 0,
-            friction: config.friction ?? 1.0, // 1.0 = brak hamowania
+            friction: config.friction ?? 1.0,
+            angularSpeed: config.angularSpeed ?? [0, 0],
             tint: config.tint ?? [0xffffff, 0xffffff],
+            wind: config.wind ?? { strength: 0, frequency: 0 },
+            emitArea: config.emitArea ?? { width: 0, height: 0 },
             dynamic: {
                 position: config.dynamic?.position ?? true,
-                rotation: config.dynamic?.rotation ?? false,
+                rotation: config.dynamic?.rotation ?? true,
                 scale: config.dynamic?.scale ?? true,
                 color: config.dynamic?.color ?? true,
             },
         };
     }
 
-    /** Start emisji ciągłej (podpina tick do Ticker.shared). */
     public start(autoUpdate = true): void {
         this.running = true;
         this.emitAcc = 0;
         if (autoUpdate) Ticker.shared.add(this._tickMain, this);
     }
 
-    /** Stop emisji ciągłej (odpina tick). */
     public stop(): void {
         this.running = false;
         Ticker.shared.remove(this._tickMain, this);
     }
 
-    /**
-     * Jednorazowa emisja N cząsteczek, niezależna od trybu ciągłego.
-     * Podpina tymczasowy updater tylko na czas „życia” tych cząsteczek.
-     */
     public emitOnce(count?: number): void {
         const amount = count ?? this.cfg.maxParticles;
         for (let i = 0; i < amount && this.live.length < this.cfg.maxParticles; i++) {
@@ -112,12 +112,10 @@ export class BaseParticleEffect extends ParticleContainer {
         }
     }
 
-    /** Ustaw pozycję emitera (czyli kontenera). */
     public setEmitterPosition(x: number, y: number): void {
         this.position.set(x, y);
     }
 
-    /** Sprzątanie zasobów klasy (bez niszczenia Particle – nie mają destroy()). */
     public override destroy(options?: Parameters<ParticleContainer['destroy']>[0]): void {
         this.stop();
         if (this.onceUpdating) {
@@ -135,7 +133,6 @@ export class BaseParticleEffect extends ParticleContainer {
 
     // ===== Ticki =====
 
-    /** Tick trybu ciągłego: emituje wg emissionRate i aktualizuje cząsteczki. */
     private _tickMain(ticker: Ticker): void {
         if (!this.running) return;
         const dt = ticker.deltaMS / 1000;
@@ -143,7 +140,6 @@ export class BaseParticleEffect extends ParticleContainer {
         this._updateParticles(dt);
     }
 
-    /** Tick dla emitOnce(): tylko aktualizuje cząsteczki aż do wygaśnięcia ostatniej. */
     private _tickOnce(ticker: Ticker): void {
         const dt = ticker.deltaMS / 1000;
         this._updateParticles(dt);
@@ -166,6 +162,8 @@ export class BaseParticleEffect extends ParticleContainer {
 
     private _updateParticles(dt: number): void {
         const hasFriction = this.cfg.friction !== 1.0;
+        const hasWind = this.cfg.wind.strength !== 0 && this.cfg.wind.frequency !== 0;
+
         for (let i = this.live.length - 1; i >= 0; i--) {
             const p = this.live[i];
             const d = this.data[i];
@@ -176,7 +174,6 @@ export class BaseParticleEffect extends ParticleContainer {
                 continue;
             }
 
-            // ruch
             if (hasFriction) {
                 d.vx *= this.cfg.friction;
                 d.vy *= this.cfg.friction;
@@ -185,29 +182,38 @@ export class BaseParticleEffect extends ParticleContainer {
             p.y += d.vy * dt;
             d.vy += this.cfg.gravity * dt;
 
-            // interpolacje
             const t = d.age / d.life;
             p.alpha = d.startAlpha + t * (d.endAlpha - d.startAlpha);
             const s = d.startScale + t * (d.endScale - d.startScale);
             p.scaleX = s;
             p.scaleY = s;
 
-            // morfowanie koloru (tint)
             p.tint = lerpColor(d.startTint, d.endTint, t);
+
+            if (hasWind) {
+                p.x +=
+                    Math.sin(d.age * d.windFrequency + d.windOffset) * this.cfg.wind.strength * dt;
+            }
+
+            p.rotation += d.angularSpeed * dt;
         }
     }
 
     // ===== Spawn / despawn =====
 
     private _spawn(): void {
-        const p = this.pool.pop() ?? new Particle({ texture: this._tex });
+        // losowanie tekstury
+        const tex = this._texArray[(Math.random() * this._texArray.length) | 0];
+        const p = this.pool.pop() ?? new Particle({ texture: tex });
+        p.texture = tex;
 
-        // kotwiczenie na środku, jak w Sprite.anchor.set(0.5)
         p.anchorX = 0.5;
         p.anchorY = 0.5;
 
-        p.x = 0;
-        p.y = 0;
+        const offsetX = (Math.random() - 0.5) * this.cfg.emitArea.width;
+        const offsetY = (Math.random() - 0.5) * this.cfg.emitArea.height;
+        p.x = offsetX;
+        p.y = offsetY;
         p.rotation = 0;
 
         const ang = deg2rad(rand(this.cfg.angle[0], this.cfg.angle[1]));
@@ -216,6 +222,10 @@ export class BaseParticleEffect extends ParticleContainer {
         const endScale = startScale * 0.5;
 
         const [startTint, endTint] = this.cfg.tint;
+        const angSpeed = deg2rad(rand(this.cfg.angularSpeed[0], this.cfg.angularSpeed[1]));
+
+        const windOffset = Math.random() * Math.PI * 2;
+        const windFrequency = this.cfg.wind.frequency * rand(0.8, 1.2);
 
         p.alpha = this.cfg.alpha[0];
         p.scaleX = startScale;
@@ -236,13 +246,16 @@ export class BaseParticleEffect extends ParticleContainer {
             endScale,
             startTint,
             endTint,
+            angularSpeed: angSpeed,
+            windOffset,
+            windFrequency,
         });
     }
 
     private _despawnAt(i: number): void {
         const p = this.live[i];
         this.removeParticle(p);
-        this.pool.push(p); // recykling
+        this.pool.push(p);
         this.live.splice(i, 1);
         this.data.splice(i, 1);
     }

@@ -15,6 +15,43 @@ export const effects = async () => {
 
     const texture = PIXI.Texture.from('particle.png'); // wspólny baseTexture dla wszystkich cząsteczek!
 
+    const leavesEffect = new BaseParticleEffect(
+        {
+            maxParticles: 200,
+            emissionRate: 40,
+            lifetime: [3.0, 6.0],
+            speed: [40, 120],
+            scale: [0.5, 1.5],
+            alpha: [1, 0],
+            angle: [200, 340],
+            gravity: 50,
+            friction: 0.97,
+            tint: [0x2e8b57, 0xcd853f],
+            wind: { strength: 25, frequency: 2 },
+            angularSpeed: [-90, 90],
+            dynamic: { position: true, scale: true, color: true },
+        },
+        texture,
+    );
+
+    const rainEffect = new BaseParticleEffect(
+        {
+            maxParticles: 1200,
+            emissionRate: 500,
+            lifetime: [1.0, 1.8],
+            speed: [600, 900],
+            scale: [0.1, 0.2],
+            alpha: [0.8, 0.8],
+            angle: [85, 95],
+            gravity: 1200,
+            tint: [0x88bbff, 0x88bbff],
+            wind: { strength: 15, frequency: 3 },
+            emitArea: { width: app.renderer.width, height: 0 }, // ⬅️ prostokąt
+            dynamic: { position: true, scale: true, color: true },
+        },
+        texture,
+    );
+
     const explosionEffect = new BaseParticleEffect(
         {
             maxParticles: 500,
@@ -120,5 +157,5 @@ export const effects = async () => {
         effect.emitOnce(200);
     };
 
-    startEffect(fireBurst);
+    startEffect(leavesEffect);
 };
