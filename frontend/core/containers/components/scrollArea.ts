@@ -89,13 +89,11 @@ export class ScrollArea extends PIXI.Container {
             this.scrollableAreaScrollStartY = e.global.y;
         });
 
-        this.on('pointerup', () => {
-            this.isScrolling = false;
-        });
-
         this.on('pointermove', (e) => {
             if (this.isScrolling) {
-                this.scrollingDelta = this.scrollableAreaScrollStartY - e.global.y;
+                const sign = Math.sign(this.scrollableAreaScrollStartY - e.global.y);
+                const value = Math.abs(this.scrollableAreaScrollStartY - e.global.y);
+                this.scrollingDelta = Math.min(value, 100) * sign;
             }
         });
 
@@ -108,6 +106,11 @@ export class ScrollArea extends PIXI.Container {
                             this.scrollingDelta = message.data;
                         }
                         break;
+                    }
+                    case 'pointerdown': {
+                        if (!message.data) {
+                            this.isScrolling = false;
+                        }
                     }
                 }
             },
