@@ -8,8 +8,10 @@ import { ScrollArea } from '@components/scrollArea';
 import { Box } from '@components/box';
 import { GameSettings } from '@systems/gameSettings';
 import { SoundSliderOption } from '@components/soundSliderOption';
+import { Backdrop } from '@components/backdrop';
 
 export class ConfigurationPopup extends BasePopup<never> {
+    backdrop!: Backdrop;
     box!: Box;
     title!: Typography;
     closeButton!: Button;
@@ -25,6 +27,9 @@ export class ConfigurationPopup extends BasePopup<never> {
     }
 
     createBaseComponents(): void {
+        this.backdrop = new Backdrop();
+        this.addChild(this.backdrop);
+
         this.box = new Box({
             x: CoreConfig.centerX,
             y: CoreConfig.centerY,

@@ -8,8 +8,11 @@ export class CoreConfigBase {
     centerX = this.width / 2;
     centerY = this.height / 2;
 
-    primaryColor = 0x3481b4; // #3481b4
+    primaryColor = 0x1987cf; // #1987cfff
+    primaryDarkColor = 0x0d4063; // #0d4063ff
+    primaryLightColor = 0x56bbff; // #56bbffff
     primaryContrastColor = 0xffffff; // #ffffff
+    darkColor = 0x061017; // #061017ff
     roundness = 15;
 }
 
