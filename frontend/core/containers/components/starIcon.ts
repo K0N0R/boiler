@@ -8,6 +8,7 @@ export interface IStarIconParams {
     size: number;
     spaceBetween: number;
     shadow: boolean;
+    empty: boolean;
 }
 
 export class StarIcon extends PIXI.Container {
@@ -35,7 +36,7 @@ export class StarIcon extends PIXI.Container {
             this.starEffects = [];
         }
 
-        const texture = PIXI.Assets.get('star.png');
+        const texture = PIXI.Assets.get(params.empty ? 'star-empty.png' : 'star.png');
         for (let i = 0; i < amount; i++) {
             if (params.shadow) {
                 const sprite = new PIXI.Sprite(texture);
